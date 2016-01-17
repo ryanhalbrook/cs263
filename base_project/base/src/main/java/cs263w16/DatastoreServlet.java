@@ -16,6 +16,11 @@ public class DatastoreServlet extends HttpServlet {
       resp.setContentType("text/html");
       resp.getWriter().println("<html><body>");
 
+      String keyName = req.getParameter("keyname");
+      String value = req.getParameter("value");
+
+      // Check that a valid set of parameters is passed in.
+
       for (Enumeration<String> paramNames = req.getParameterNames(); paramNames.hasMoreElements();) {
         String paramName = paramNames.nextElement();
         if (!paramName.equals("keyname") &&
@@ -26,59 +31,139 @@ public class DatastoreServlet extends HttpServlet {
         }
       }
 
-      String keyName = req.getParameter("keyname");
-      String value = req.getParameter("value");
-
       if (keyName == null && value != null) {
         resp.getWriter().println("Error, invalid parameters. Only none, keyname, or keyname and value allowed.");
         resp.getWriter().println("</body></html>");
         return;
       }
 
-      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+
 
       if (keyName != null && value != null) {
 
-        resp.getWriter().println("Adding Task Data with Key = " + keyName + " and Value = " + value + " to the Datastore.");
+        // Add a TaskData entity to the datastore with keyname and value
 
-        Entity taskData = new Entity("TaskData", keyName);
-        taskData.setProperty("value", value);
-        taskData.setProperty("date", new Date());
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        MemcacheService memcache = MemcacheServiceFactory.getMemcacheService();
+        if (memcache != null) memcache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
 
-        datastore.put(taskData);
+        if (memcache != null) {
+          memcache.put(keyName, value);
+          resp.getWriter().println("Stored " + keyName + " and " + value + " in Memcache");
+        }
+
+        if (datastore != null) {
+          Entity taskData = new Entity("TaskData", keyName);
+          taskData.setProperty("value", value);
+          taskData.setProperty("date", new Date());
+
+          datastore.put(taskData);
+
+          resp.getWriter().println("Stored " + keyName + " and " + value + " in Datastore");
+        }
 
       } else if (keyName != null) {
 
         resp.getWriter().println("<h3>The Task Data Entity with Key: " + keyName + "</h3>");
 
-        Key k = KeyFactory.createKey("TaskData", keyName);
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        MemcacheService memcache = MemcacheServiceFactory.getMemcacheService();
+        if (memcache != null) memcache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
 
-        try {
+        boolean inMemcache = false;
+        boolean inDatastore = false;
+        String valueFound = null;
 
-          Entity result = datastore.get(k);
-          String resultValue = (String) result.getProperty("value");
-          Date resultDate = (Date) result.getProperty("date");
-
-          resp.getWriter().println(resultValue + ", " + resultDate);
-
-        } catch (EntityNotFoundException e) {
-          resp.getWriter().println("Could not find the specified entity");
+        if (memcache != null) {
+          value = (String) memcache.get(keyName);
+          inMemcache = (value != null) ? true : false;
         }
+
+        if (datastore != null) {
+          Key k = KeyFactory.createKey("TaskData", keyName);
+
+          try {
+
+            // Find the entity with the given keyname
+
+            Entity result = datastore.get(k);
+            String resultValue = (String) result.getProperty("value");
+            Date resultDate = (Date) result.getProperty("date");
+
+            resp.getWriter().println(resultValue + ", " + resultDate);
+
+            inDatastore = true;
+            valueFound = resultValue;
+
+          } catch (EntityNotFoundException e) {
+            resp.getWriter().println("Could not find the specified entity");
+            inDatastore = false;
+          }
+        }
+
+        String message = "";
+
+        if (inMemcache && inDatastore) {
+          message = "Both";
+        } else if (inDatastore) {
+          message = "Datastore";
+          // Add to memcache
+          if (memcache != null) {
+            memcache.put(keyName, valueFound);
+          }
+
+        } else if (inMemcache) {
+          message = "Memcache";
+        } else {
+          message = "Neither";
+        }
+
+        resp.getWriter().println("Found in " + message);
 
       } else {
-        // Find all entities of kind TaskData
-        Query q = new Query("TaskData");
-        PreparedQuery pq = datastore.prepare(q);
 
-        resp.getWriter().println("<h3>All Task Data Entities</h3>");
+        ArrayList<String> keyNames = new ArrayList<>();
 
-        // Display all results
-        for (Entity result : pq.asIterable()) {
-          String resultValue = (String) result.getProperty("value");
-          Date resultDate = (Date) result.getProperty("date");
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-          resp.getWriter().println("<ul>" + resultValue + ", " + resultDate + "</ul>");
+        if (datastore != null) {
+          // Find all entities of kind TaskData
+          Query q = new Query("TaskData");
+          PreparedQuery pq = datastore.prepare(q);
+
+          resp.getWriter().println("<h3>All Task Data Entities</h3>");
+
+          // Display all results
+          resp.getWriter().println("<ul>");
+          for (Entity result : pq.asIterable()) {
+            String resultValue = (String) result.getProperty("value");
+            Date resultDate = (Date) result.getProperty("date");
+            keyNames.add(result.getKey().getName());
+
+            resp.getWriter().println("<li>" + resultValue + ", " + resultDate + "</li>");
+          }
+          resp.getWriter().println("</ul>");
         }
+
+        // Show entities that were found in the memcache
+        resp.getWriter().println("<h3>Task Data Entities Found in Memcache (based on those seen in the datastore)</h3>");
+
+        MemcacheService memcache = MemcacheServiceFactory.getMemcacheService();
+        if (memcache != null) memcache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+
+        resp.getWriter().println("<ul>");
+        for (String aKey : keyNames) {
+          // Look up in memcache.
+          if (memcache != null) {
+            value = (String) memcache.get(aKey);
+            if (value != null) {
+              resp.getWriter().println("<li>" + aKey + ", " + value + "</li>");
+            }
+          }
+        }
+        resp.getWriter().println("</ul>");
+
       }
 
 
