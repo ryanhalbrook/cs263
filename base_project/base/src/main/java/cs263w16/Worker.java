@@ -4,7 +4,9 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.*;
 import java.util.*;
+import java.util.logging.*;
 import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.memcache.*;
 
 // The Worker servlet should be mapped to the "/worker" URL.
 public class Worker extends HttpServlet {
@@ -16,6 +18,12 @@ public class Worker extends HttpServlet {
         // Add a TaskData entity to the datastore with keyname and value
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        MemcacheService memcache = MemcacheServiceFactory.getMemcacheService();
+        if (memcache != null) memcache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
+
+        if (memcache != null) {
+          memcache.put(keyName, value);
+        }
 
         if (datastore != null) {
           Entity taskData = new Entity("TaskData", keyName);
