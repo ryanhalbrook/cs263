@@ -15,6 +15,10 @@ public class Worker extends HttpServlet {
         String keyName = request.getParameter("keyname");
         String value = request.getParameter("value");
 
+        if (keyName == null || value == null) {
+          return;
+        }
+
         // Add a TaskData entity to the datastore with keyname and value
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
