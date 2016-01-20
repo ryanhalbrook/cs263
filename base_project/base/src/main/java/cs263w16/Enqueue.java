@@ -17,7 +17,7 @@ public class Enqueue extends HttpServlet {
 
         // Add the task to the default queue.
         Queue queue = QueueFactory.getDefaultQueue();
-        queue.add(TaskOptions.Builder.withUrl("/worker").param("keyname", key).param("value", value));
+        queue.add(TaskOptions.Builder.withUrl("/rest/ds").param("keyname", key).param("value", value));
 
         response.sendRedirect("/done.html");
     }
