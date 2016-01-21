@@ -112,18 +112,23 @@ public class TaskDataResource {
   */
   private TaskData retrieveWithCacheCheck(String keyName) {
 
-    DatastoreService datastore = getDatastoreService();
     MemcacheService memcache = getMemcacheService();
     TaskData taskData = null;
 
     if (memcache != null) {
-      taskData = (TaskData) memcache.get(keyName);
+      Entity entity = (Entity) memcache.get(keyName);
+      if (entity != null) {
+        taskData = new TaskData(entity.getKey().getName(), (String) entity.getProperty("value"), (Date) entity.getProperty("date"));
+      }
     }
 
     if (taskData == null) {
       taskData = retrieve(keyName);
       if (taskData != null && memcache != null) {
-        memcache.put(keyName, taskData);
+        Entity entity = new Entity("TaskData", keyName);
+        entity.setProperty("value", taskData.getValue());
+        entity.setProperty("date", taskData.getDate());
+        memcache.put(keyName, entity);
       }
     }
 
@@ -172,7 +177,7 @@ public class TaskDataResource {
       datastore.put(taskData);
     }
     if (memcache != null) {
-      memcache.put(td.getKeyname(), td);
+      memcache.put(td.getKeyname(), taskData);
     }
   }
 

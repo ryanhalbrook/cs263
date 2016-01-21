@@ -37,8 +37,8 @@ public class DatastoreResource {
 
     if (memcache != null && keynames != null) {
       for (String keyname : keynames) {
-        TaskData taskData = (TaskData) memcache.get(keyname);
-        data.add(new TaskData(keyname, "KEY FOUND IN MEMCACHE", new Date()));
+        Entity entity = (Entity) memcache.get(keyname);
+        log.info("Found key = " + keyname + " in memcache");
       }
     }
 
@@ -58,9 +58,9 @@ public class DatastoreResource {
 
     if (memcache != null && keynames != null) {
       for (String keyname : keynames) {
-        TaskData taskData = (TaskData) memcache.get(keyname);
-        if (taskData != null) {
-          data.add(new TaskData(keyname, "KEY FOUND IN MEMCACHE", new Date()));
+        Entity entity = (Entity) memcache.get(keyname);
+        if (entity != null) {
+          log.info("Found key = " + keyname + " in memcache");
         }
       }
     }
@@ -102,7 +102,7 @@ public class DatastoreResource {
       datastore.put(taskData);
     }
     if (memcache != null) {
-      memcache.put(td.getKeyname(), td);
+      memcache.put(td.getKeyname(), taskData);
     }
   }
 

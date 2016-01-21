@@ -166,8 +166,6 @@ public class DSTester {
 
 /////////////////////////////////////////////////////////
   private static URI getBaseURI() {
-    final String HOST = "localhost:8080";
-    System.out.println("HOST " + HOST);
-    return UriBuilder.fromUri("http://" + HOST + "/").build();
+    return UriBuilder.fromUri("http://localhost:8080/").build();
   }
 }

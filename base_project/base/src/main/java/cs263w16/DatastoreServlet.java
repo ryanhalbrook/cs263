@@ -65,7 +65,7 @@ public class DatastoreServlet extends HttpServlet {
 
       } else if (keyName != null) {
 
-        resp.getWriter().println("<h3>The Task Data Entity with Key: " + keyName + "</h3>");
+        resp.getWriter().println("<h3>Task Data Entity with Key: " + keyName + "</h3>");
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         MemcacheService memcache = MemcacheServiceFactory.getMemcacheService();
@@ -91,7 +91,7 @@ public class DatastoreServlet extends HttpServlet {
             String resultValue = (String) result.getProperty("value");
             Date resultDate = (Date) result.getProperty("date");
 
-            resp.getWriter().println(resultValue + ", " + resultDate);
+            resp.getWriter().println(k.getName() + ", " + resultValue + ", " + resultDate);
 
             inDatastore = true;
             valueFound = resultValue;
@@ -110,7 +110,7 @@ public class DatastoreServlet extends HttpServlet {
           message = "Datastore";
           // Add to memcache
           if (memcache != null) {
-            memcache.put(keyName, valueFound);
+            //memcache.put(keyName, valueFound);
           }
 
         } else if (inMemcache) {
@@ -135,15 +135,15 @@ public class DatastoreServlet extends HttpServlet {
           resp.getWriter().println("<h3>All Task Data Entities</h3>");
 
           // Display all results
-          resp.getWriter().println("<ul>");
+          resp.getWriter().println("<table border=1>");
           for (Entity result : pq.asIterable()) {
             String resultValue = (String) result.getProperty("value");
             Date resultDate = (Date) result.getProperty("date");
             keyNames.add(result.getKey().getName());
 
-            resp.getWriter().println("<li>" + resultValue + ", " + resultDate + "</li>");
+            resp.getWriter().println("<tr><td>" + result.getKey().getName() + "</td><td>" + resultValue + "</td><td>" + resultDate + "</td></tr>");
           }
-          resp.getWriter().println("</ul>");
+          resp.getWriter().println("</table>");
         }
 
         // Show entities that were found in the memcache
@@ -152,17 +152,17 @@ public class DatastoreServlet extends HttpServlet {
         MemcacheService memcache = MemcacheServiceFactory.getMemcacheService();
         if (memcache != null) memcache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
 
-        resp.getWriter().println("<ul>");
+        resp.getWriter().println("<table border=1>");
         for (String aKey : keyNames) {
           // Look up in memcache.
           if (memcache != null) {
-            value = (String) memcache.get(aKey);
-            if (value != null) {
-              resp.getWriter().println("<li>" + aKey + ", " + value + "</li>");
+            Entity entity = (Entity) memcache.get(aKey);
+            if (entity != null) {
+              resp.getWriter().println("<tr><td>" + aKey + "</td><td>" + entity.getProperty("value") + "</td><td>" + entity.getProperty("date") + "</td></tr>");
             }
           }
         }
-        resp.getWriter().println("</ul>");
+        resp.getWriter().println("</table>");
 
       }
 
