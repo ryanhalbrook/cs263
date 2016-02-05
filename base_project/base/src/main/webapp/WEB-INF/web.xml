@@ -13,6 +13,10 @@
     <servlet-name>worker</servlet-name>
     <servlet-class>cs263w16.Worker</servlet-class>
   </servlet>
+    <servlet>
+        <servlet-name>newuser</servlet-name>
+        <servlet-class>cs263w16.NewUserServlet</servlet-class>
+    </servlet>
 
   <servlet-mapping>
    <servlet-name>datastore</servlet-name>
@@ -26,6 +30,10 @@
    <servlet-name>worker</servlet-name>
    <url-pattern>/worker</url-pattern>
   </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>newuser</servlet-name>
+        <url-pattern>/newuser</url-pattern>
+    </servlet-mapping>
 
   <servlet>
     <servlet-name>Jersey REST Service</servlet-name>
