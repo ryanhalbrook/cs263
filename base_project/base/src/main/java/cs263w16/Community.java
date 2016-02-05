@@ -17,7 +17,7 @@ public class Community {
         this.creationDate = new Date();
     }
 
-    public Community(String id, String html, Date creationDate) {
+    public Community(String id, String description, Date creationDate) {
         this.id = id;
         this.description = description;
         this.creationDate = creationDate;
@@ -32,7 +32,7 @@ public class Community {
     public String getDescription() {
         return description;
     }
-    public void setDescription(String html) {
+    public void setDescription(String description) {
         this.description = description;
     }
     public Date getCreationDate() {

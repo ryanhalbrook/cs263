@@ -39,7 +39,7 @@ public class CommunityResource {
     // for the application
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Community getPage() {
+    public Community getCommunity() {
         Community community = retrieveWithCacheCheck(this.cid);
         if (community == null) {
             throw new RuntimeException("Get: Community with " + cid +  " not found");
@@ -50,14 +50,14 @@ public class CommunityResource {
 
     @PUT
     @Consumes(MediaType.APPLICATION_XML)
-    public Response putPage(String description) {
+    public Response putCommunity(String description) {
         Response res = null;
 
         Community result = retrieve(this.cid);
 
         //first check if the Entity exists in the datastore
         if (result == null) {
-            throw new RuntimeException("Cannot modify a page that does not exist");
+            throw new RuntimeException("Cannot modify a community that does not exist");
         } else {
             //update the entity
             result.setDescription(description);
@@ -96,7 +96,7 @@ public class CommunityResource {
     }
 
     /**
-     Retrieve the Page entity with the given keyName. Search in
+     Retrieve the Community entity with the given keyName. Search in
      1) memcache
      2) datastore
 
@@ -118,7 +118,7 @@ public class CommunityResource {
         if (community == null) {
             community = retrieve(keyName);
             if (community != null && memcache != null) {
-                Entity entity = new Entity("Page", keyName);
+                Entity entity = new Entity("Community", keyName);
                 entity.setProperty("description", community.getDescription());
                 entity.setProperty("date", community.getCreationDate());
                 memcache.put(keyName, entity);
