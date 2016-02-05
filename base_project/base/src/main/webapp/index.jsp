@@ -76,6 +76,13 @@
 
 <div class="container">
 
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Search communities...">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button">Search</button>
+      </span>
+    </div><!-- /input-group -->
+
     <div class="starter-template">
 
 

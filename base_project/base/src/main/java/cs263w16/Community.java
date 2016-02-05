@@ -7,19 +7,19 @@ import java.util.Date;
  * Created by ryanhalbrook on 1/29/16.
  */
 @XmlRootElement
-public class Page {
+public class Community {
 
     private String id;
-    private String html;
+    private String description;
     private Date creationDate;
 
-    public Page() {
+    public Community() {
         this.creationDate = new Date();
     }
 
-    public Page(String id, String html, Date creationDate) {
+    public Community(String id, String html, Date creationDate) {
         this.id = id;
-        this.html = html;
+        this.description = description;
         this.creationDate = creationDate;
     }
 
@@ -29,11 +29,11 @@ public class Page {
     public void setId(String id) {
         this.id = id;
     }
-    public String getHtml() {
-        return html;
+    public String getDescription() {
+        return description;
     }
-    public void setHtml(String html) {
-        this.html = html;
+    public void setDescription(String html) {
+        this.description = description;
     }
     public Date getCreationDate() {
         return creationDate;

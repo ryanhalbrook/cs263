@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 /**
  * Created by ryanhalbrook on 1/29/16.
  */
-@Path("/Page")
-public class PageResource {
+@Path("/community")
+public class CommunityResource {
 
     // Allows to insert contextual objects into the class,
     // e.g. ServletContext, Request, Response, UriInfo
@@ -26,41 +26,41 @@ public class PageResource {
 
     private MemcacheService _memcache;
     private DatastoreService _datastore;
-    private static final Logger log = Logger.getLogger(PagesResource.class.getName());
+    private static final Logger log = Logger.getLogger(CommunityResource.class.getName());
 
-    private String pageid;
+    private String cid;
 
-    public PageResource(UriInfo uriInfo, Request request, String pageid) {
+    public CommunityResource(UriInfo uriInfo, Request request, String communityId) {
         this.uriInfo = uriInfo;
         this.request = request;
-        this.pageid = pageid;
+        this.cid = communityId;
     }
 
     // for the application
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Page getPage() {
-        Page page = retrieveWithCacheCheck(this.pageid);
-        if (page == null) {
-            throw new RuntimeException("Get: Page with " + pageid +  " not found");
+    public Community getPage() {
+        Community community = retrieveWithCacheCheck(this.cid);
+        if (community == null) {
+            throw new RuntimeException("Get: Community with " + cid +  " not found");
         }
 
-        return page;
+        return community;
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_XML)
-    public Response putPage(String html) {
+    public Response putPage(String description) {
         Response res = null;
 
-        Page result = retrieve(this.pageid);
+        Community result = retrieve(this.cid);
 
         //first check if the Entity exists in the datastore
         if (result == null) {
             throw new RuntimeException("Cannot modify a page that does not exist");
         } else {
             //update the entity
-            result.setHtml(html);
+            result.setDescription(description);
             put(result);
 
             //signal that we updated the entity
@@ -79,7 +79,7 @@ public class PageResource {
         DatastoreService datastore = getDatastoreService();
         MemcacheService memcache = getMemcacheService();
 
-        Key k = KeyFactory.createKey("Page", this.pageid);
+        Key k = KeyFactory.createKey("Community", this.cid);
 
         try {
             if (memcache != null) {
@@ -103,29 +103,29 @@ public class PageResource {
      Adds to memcache if only found in data store.
      @return null if entity not found.
      */
-    private Page retrieveWithCacheCheck(String keyName) {
+    private Community retrieveWithCacheCheck(String keyName) {
 
         MemcacheService memcache = getMemcacheService();
-        Page page = null;
+        Community community = null;
 
         if (memcache != null) {
             Entity entity = (Entity) memcache.get(keyName);
             if (entity != null) {
-                page = new Page(entity.getKey().getName(), (String) entity.getProperty("html"), (Date) entity.getProperty("date"));
+                community = new Community(entity.getKey().getName(), (String) entity.getProperty("description"), (Date) entity.getProperty("date"));
             }
         }
 
-        if (page == null) {
-            page = retrieve(keyName);
-            if (page != null && memcache != null) {
+        if (community == null) {
+            community = retrieve(keyName);
+            if (community != null && memcache != null) {
                 Entity entity = new Entity("Page", keyName);
-                entity.setProperty("html", page.getHtml());
-                entity.setProperty("date", page.getCreationDate());
+                entity.setProperty("description", community.getDescription());
+                entity.setProperty("date", community.getCreationDate());
                 memcache.put(keyName, entity);
             }
         }
 
-        return page;
+        return community;
 
     }
 
@@ -136,41 +136,41 @@ public class PageResource {
 
      @return null if entity not found.
      */
-    private Page retrieve(String keyName) {
+    private Community retrieve(String keyName) {
 
         DatastoreService datastore = getDatastoreService();
         if (datastore == null) throw new RuntimeException("Failed to acquire Datastore Service object");
 
-        Page page = null;
-        Key k = KeyFactory.createKey("Page", keyName);
+        Community community = null;
+        Key k = KeyFactory.createKey("Community", keyName);
         try {
             // Find the entity with the given keyname
             Entity result = datastore.get(k);
-            page = new Page(keyName, (String)result.getProperty("html"), (Date)result.getProperty("date"));
+            community = new Community(keyName, (String)result.getProperty("description"), (Date)result.getProperty("date"));
 
         } catch (EntityNotFoundException e) {
-            page = null;
+            community = null;
         }
 
-        return page;
+        return community;
     }
 
     /**
      Adds or updates (replaces) the entity in the Datastore or the Memcache.
      */
-    private void put(Page pg) {
+    private void put(Community pg) {
         DatastoreService datastore = getDatastoreService();
         MemcacheService memcache = getMemcacheService();
 
-        Entity page = new Entity("Page", pg.getId());
-        page.setProperty("html", pg.getHtml());
-        page.setProperty("date", pg.getCreationDate());
+        Entity community = new Entity("Comunity", pg.getId());
+        community.setProperty("description", pg.getDescription());
+        community.setProperty("date", pg.getCreationDate());
 
         if (datastore != null) {
-            datastore.put(page);
+            datastore.put(community);
         }
         if (memcache != null) {
-            memcache.put(pg.getId(), page);
+            memcache.put(pg.getId(), community);
         }
     }
 
