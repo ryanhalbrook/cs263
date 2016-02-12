@@ -53,16 +53,12 @@ public class CommunitiesResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public void newCommunity(@FormParam("communityid") String communityId,
                         @FormParam("description") String description,
-                        @Context HttpServletResponse servletResponse) throws IOException {
-        Date d = new Date();
-
-        Community community = new Community(communityId, description, d);
-        put(community);
-
-        //servletResponse.setStatus(204);
-        //servletResponse.sendRedirect("/done.html");
+                        @Context HttpServletResponse servletResponse) throws IOException
+    {
+        Community community = new Community(communityId, description, new Date());
+        DataModel.putCommunity(getDatastoreService(), community);
     }
-
+/*
     private void put(Community pg) {
         DatastoreService datastore = getDatastoreService();
         MemcacheService memcache = getMemcacheService();
@@ -78,7 +74,7 @@ public class CommunitiesResource {
             memcache.put(pg.getId(), community);
         }
     }
-
+*/
     private List<Community> dumpDatastore(List<String> keynames) {
         List<Community> list = new ArrayList<Community>();
 

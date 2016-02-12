@@ -193,4 +193,9 @@ public class CommunityResource {
         return _memcache;
     }
 
+    @Path("events")
+    public CommunityEventsResource getEventsForCommunity(@PathParam("community") String id) {
+        return new CommunityEventsResource(uriInfo, request, id);
+    }
+
 }
