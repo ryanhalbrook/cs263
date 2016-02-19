@@ -117,6 +117,12 @@ public class Dao implements AppDao {
 
         System.out.println("Pattern = " + pattern);
 
+
+        // Prefix Search Technique Information:
+        // http://stackoverflow.com/questions/47786/google-app-engine-is-it-possible-to-do-a-gql-like-query
+        // http://stackoverflow.com/questions/2900343/google-app-engine-query-data-store-by-a-string-start-with
+        // http://stackoverflow.com/questions/1554600/implementing-starts-with-and-ends-with-queries-with-google-app-engine
+
         Filter gte =
                 new FilterPredicate(Entity.KEY_RESERVED_PROPERTY,
                         FilterOperator.GREATER_THAN_OR_EQUAL,
