@@ -1,9 +1,6 @@
 package cs263w16;
 
 import com.google.appengine.api.datastore.*;
-import com.google.appengine.api.memcache.ErrorHandlers;
-import com.google.appengine.api.memcache.MemcacheService;
-import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import cs263w16.AppDao.AppDaoFactory;
 
 import javax.servlet.http.HttpServletResponse;
@@ -13,11 +10,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -64,8 +58,13 @@ public class CommunitiesResource {
     // Defines that the next path parameter after communities is
     // treated as a parameter and passed to the CommunityResource
     @Path("{community}")
-    public CommunityResource getTodo(@PathParam("community") String id) {
+    public CommunityResource getCommunity(@PathParam("community") String id) {
         return new CommunityResource(uriInfo, request, id);
+    }
+
+    @Path("search")
+    public CommunitiesSearchResource getCommunitiesSearch() {
+        return new CommunitiesSearchResource(uriInfo, request);
     }
 
 

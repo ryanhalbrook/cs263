@@ -23,4 +23,5 @@ public interface AppDao {
 
     public List<Event> eventsForCommunity(String communityName);
     public void addMembership(String user, String community);
+    public List<Community> queryCommunitiesPrefix(String pattern);
 }

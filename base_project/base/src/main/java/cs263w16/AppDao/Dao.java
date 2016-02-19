@@ -2,8 +2,6 @@ package cs263w16.AppDao;
 
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.*;
-import com.google.appengine.api.memcache.MemcacheService;
-import cs263w16.AppUser;
 import cs263w16.Community;
 import cs263w16.Event;
 
@@ -16,7 +14,6 @@ import java.util.*;
 public class Dao implements AppDao {
 
     private DatastoreService datastore;
-    private MemcacheService memcache;
 
     public Dao(DatastoreService datastore) {
         this.datastore = datastore;
@@ -113,6 +110,39 @@ public class Dao implements AppDao {
 
         datastore.put(entity);
 
+    }
+
+    public List<Community> queryCommunitiesPrefix(String pattern) {
+        List <Community> matchingCommunities = new ArrayList<>();
+
+        System.out.println("Pattern = " + pattern);
+
+        Filter gte =
+                new FilterPredicate(Entity.KEY_RESERVED_PROPERTY,
+                        FilterOperator.GREATER_THAN_OR_EQUAL,
+                        KeyFactory.createKey("Community", pattern));
+
+        Filter lt =
+                new FilterPredicate(Entity.KEY_RESERVED_PROPERTY,
+                        FilterOperator.LESS_THAN,
+                        KeyFactory.createKey("Community", pattern + "\uFFFD"));
+
+        CompositeFilter filter =
+                new CompositeFilter(CompositeFilterOperator.AND, Arrays.asList(gte, lt));
+
+        Query q = new Query("Community").setFilter(filter);
+        List<Entity> entities = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+
+        for (Entity e : entities) {
+            Community c = new Community(
+                    e.getKey().getName(),
+                    (String)e.getProperty("description"),
+                    (Date)e.getProperty("creationDate"));
+
+            matchingCommunities.add(c);
+        }
+
+        return matchingCommunities;
     }
 
 }
