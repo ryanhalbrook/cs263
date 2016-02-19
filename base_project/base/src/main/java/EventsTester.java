@@ -12,9 +12,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.client.ClientConfig;
 
-import cs263w16.TaskData;
-
-public class DSTester {
+public class EventsTester {
 
   public static String HOST;
 
@@ -25,12 +23,13 @@ public class DSTester {
     WebTarget service = client.target(getBaseURI());
 
     //Delete an entity from  the Datastore
-    String keyname = "dstester1";
-    service.path("rest").path("ds").path(keyname).request().delete();
+    String communityName = "acm";
+      String eventName = "pizza";
+    service.path("rest").path("communities").path(communityName).path(eventName).request().delete();
 
-    //Create an new entity with this keyname in the Datastore
+    //Create an new entity with this communityName in the Datastore
     String val = "101";
-    Response response = service.path("rest").path("ds").path(keyname).request(MediaType.APPLICATION_XML).put(Entity.entity(val,MediaType.APPLICATION_XML),Response.class);
+    Response response = service.path("rest").path("communities").path(communityName).request(MediaType.APPLICATION_XML).put(Entity.entity(val,MediaType.APPLICATION_XML),Response.class);
 
     // Return code should be 201 == created resource
     int status = response.getStatus();
@@ -43,7 +42,7 @@ public class DSTester {
 
     //Update this same entity with a new value
     val = "102";
-    response = service.path("rest").path("ds").path(keyname).request(MediaType.APPLICATION_XML).put(Entity.entity(val,MediaType.APPLICATION_XML),Response.class);
+    response = service.path("rest").path("communities").path(communityName).request(MediaType.APPLICATION_XML).put(Entity.entity(val,MediaType.APPLICATION_XML),Response.class);
 
     // Return code should be 204 == no response
     status = response.getStatus();
@@ -54,11 +53,11 @@ public class DSTester {
     }
 
 /////////////////////////////////////////////////////////
-    // Get the TaskData's from the datastore (browser test)
+    // Get the events from the datastore (browser test)
     boolean passed = true;
     String s;
     try {
-        s = service.path("rest").path("ds").request().accept(MediaType.TEXT_XML).get(String.class);
+        s = service.path("rest").path("communities").path("acm").request().accept(MediaType.TEXT_XML).get(String.class);
     } catch (Exception e ) {
         passed = false;
         System.out.println("Test 3 Failed with exception: "+ e);
@@ -72,7 +71,7 @@ public class DSTester {
 //    // Get JSON for application
     passed = true;
     try {
-        s = service.path("rest").path("ds").request().accept(MediaType.APPLICATION_JSON).get(String.class);
+        s = service.path("rest").path("communities").request().accept(MediaType.APPLICATION_JSON).get(String.class);
 
     } catch (Exception e ) {
         passed = false;
@@ -87,7 +86,7 @@ public class DSTester {
     // Get XML for application
     passed = true;
     try {
-        s = service.path("rest").path("ds").request().accept(MediaType.APPLICATION_XML).get(String.class);
+        s = service.path("rest").path("communities").request().accept(MediaType.APPLICATION_XML).get(String.class);
     } catch (Exception e ) {
         passed = false;
         System.out.println("Test 5 Failed with exception: "+ e);
@@ -98,11 +97,11 @@ public class DSTester {
     }
 
 /////////////////////////////////////////////////////////
-    //Get TaskData with id dstester1
+    //Get event with id pizza
     passed = true;
     try {
-        s = service.path("rest").path("ds").path(keyname).request().accept(MediaType.APPLICATION_XML).get(String.class);
-        //s = service.path("rest").path("ds").path(keyname).request(MediaType.APPLICATION_XML).get(String.class);
+        s = service.path("rest").path("ds").path(communityName).request().accept(MediaType.APPLICATION_XML).get(String.class);
+        //s = service.path("rest").path("ds").path(communityName).request(MediaType.APPLICATION_XML).get(String.class);
     } catch (Exception e ) {
         passed = false;
         System.out.println("Test 6 Failed with exception: "+ e);
@@ -114,31 +113,31 @@ public class DSTester {
 
 /////////////////////////////////////////////////////////
     //Delete TaskData with id 1
-    service.path("rest").path("ds").path(keyname).request().delete();
+    service.path("rest").path("ds").path(communityName).request().delete();
 
     //Get TaskData with id dstester1 again
     passed = false;
     try {
-        s = service.path("rest").path("ds").path(keyname).request().accept(MediaType.APPLICATION_XML).get(String.class);
+        s = service.path("rest").path("ds").path(communityName).request().accept(MediaType.APPLICATION_XML).get(String.class);
     } catch (Exception e ) {
         passed = true;
         System.out.println("Test 7 Passed");
         //System.out.println(s);
     }
     if (!passed) {
-        System.out.println("Test 7 Failed: "+ keyname + " found in datastore following delete.  DB dump:");
+        System.out.println("Test 7 Failed: "+ communityName + " found in datastore following delete.  DB dump:");
         //dumping DB
         System.out.println(service.path("rest").path("ds").request().accept(MediaType.APPLICATION_XML).get(String.class));
     }
 
 /////////////////////////////////////////////////////////
-    //Make sure this keyname is not in datastore
-    keyname = "dstester2";
-    service.path("rest").path("ds").path(keyname).request().delete();
+    //Make sure this communityName is not in datastore
+    communityName = "dstester2";
+    service.path("rest").path("ds").path(communityName).request().delete();
     //Create a TaskData
     Form form =new Form();
-    form.param("keyname", keyname);
-    form.param("keyname","100");
+    form.param("communityName", communityName);
+    form.param("communityName","100");
     response = service.path("rest").path("ds").request().post(Entity.entity(form,MediaType.APPLICATION_FORM_URLENCODED),Response.class);
 
     // Return code should be 204 == no response
@@ -152,7 +151,7 @@ public class DSTester {
     //Get TaskData with id dstester3
     passed = true;
     try {
-        s = service.path("rest").path("ds").path(keyname).request().accept(MediaType.APPLICATION_XML).get(String.class);
+        s = service.path("rest").path("ds").path(communityName).request().accept(MediaType.APPLICATION_XML).get(String.class);
     } catch (Exception e ) {
         passed = false;
         System.out.println("Test 9 Failed with exception: "+ e);

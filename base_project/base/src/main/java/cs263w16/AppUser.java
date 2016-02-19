@@ -1,10 +1,11 @@
 package cs263w16;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
-
 /**
  * Created by ryanhalbrook on 2/4/16.
  */
+@XmlRootElement
 public class AppUser {
 
     // Opaque user id as given by Google account authentication
@@ -18,6 +19,12 @@ public class AppUser {
     private String firstName;
     private String lastName;
     private Date signupDate;
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public AppUser() {}
 
     public AppUser(String userId, String emailAddress, String userName, String firstName, String lastName, Date signupDate) {
         this.userId = userId;
@@ -63,5 +70,6 @@ public class AppUser {
     public Date getSignupDate() {
         return signupDate;
     }
+    public void setSignupDate(Date date) { this.signupDate = signupDate; }
 
 }

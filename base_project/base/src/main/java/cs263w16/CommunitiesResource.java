@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.memcache.ErrorHandlers;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import cs263w16.AppDao.AppDaoFactory;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -32,22 +33,13 @@ public class CommunitiesResource {
     @Context
     Request request;
 
-    private MemcacheService _memcache;
     private DatastoreService _datastore;
     private static final Logger log = Logger.getLogger(CommunitiesResource.class.getName());
 
     private static HashMap<String, String> templates = null; // value is base64 encoded html content.
 
-    // Return the list of entities to applications
-    @GET
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public List<Community> getEntities() {
-        //datastore dump -- only do this if there are a small # of entities
-        List<Community> data = dumpDatastore(null);
-        return data;
-    }
 
-    //Add a new entity to the datastore
+    // Add a new community
     @POST
     @Produces(MediaType.TEXT_HTML)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -56,43 +48,7 @@ public class CommunitiesResource {
                         @Context HttpServletResponse servletResponse) throws IOException
     {
         Community community = new Community(communityId, description, new Date());
-        DataModel.putCommunity(getDatastoreService(), community);
-    }
-/*
-    private void put(Community pg) {
-        DatastoreService datastore = getDatastoreService();
-        MemcacheService memcache = getMemcacheService();
-
-        Entity community = new Entity("Community", pg.getId());
-        community.setProperty("description", pg.getDescription());
-        community.setProperty("date", pg.getCreationDate());
-
-        if (datastore != null) {
-            datastore.put(community);
-        }
-        if (memcache != null) {
-            memcache.put(pg.getId(), community);
-        }
-    }
-*/
-    private List<Community> dumpDatastore(List<String> keynames) {
-        List<Community> list = new ArrayList<Community>();
-
-        DatastoreService datastore = getDatastoreService();
-        if (datastore != null) {
-            // Find all entities of kind Community
-            Query q = new Query("Community");
-            PreparedQuery pq = datastore.prepare(q);
-
-            for (Entity result : pq.asIterable()) {
-                String resultValue = (String) result.getProperty("description");
-                Date resultDate = (Date) result.getProperty("date");
-                list.add(new Community(result.getKey().getName(), resultValue, resultDate));
-                if (keynames != null) keynames.add(result.getKey().getName());
-            }
-        }
-
-        return list;
+        AppDaoFactory.getAppDao(getDatastoreService()).putCommunity(community);
     }
 
     private DatastoreService getDatastoreService() {
@@ -104,16 +60,6 @@ public class CommunitiesResource {
         }
         return _datastore;
     }
-
-    private MemcacheService getMemcacheService() {
-        if (_memcache == null) {
-            _memcache = MemcacheServiceFactory.getMemcacheService();
-            if (_memcache == null) log.info("Failed to acquire Memcache Service Object");
-            else _memcache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
-        }
-        return _memcache;
-    }
-
 
     // Defines that the next path parameter after communities is
     // treated as a parameter and passed to the CommunityResource
