@@ -1,15 +1,10 @@
 package cs263w16;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import cs263w16.AppDao.AppDaoFactory;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
@@ -23,12 +18,9 @@ import com.google.appengine.api.users.UserServiceFactory;
 @Path("/communityevents")
 public class CommunityEventsResource {
 
-    // Allows to insert contextual objects into the class,
-    // e.g. ServletContext, Request, Response, UriInfo
     @Context UriInfo uriInfo;
     @Context Request request;
 
-    private DatastoreService _datastore;
     private static final Logger log = Logger.getLogger(CommunityResource.class.getName());
 
     private String communityName;
@@ -47,7 +39,7 @@ public class CommunityEventsResource {
         UserService userService = UserServiceFactory.getUserService();
         User user = userService.getCurrentUser();  // Find out who the user is.
         System.out.println("The user is: " + user);
-        return AppDaoFactory.getAppDao(getDatastoreService()).eventsForCommunity(communityName);
+        return AppDaoFactory.getAppDao().eventsForCommunity(communityName);
     }
 
     @POST
@@ -58,18 +50,7 @@ public class CommunityEventsResource {
                              @Context HttpServletResponse servletResponse) throws IOException
     {
         Event event = new Event(name, description, communityName, false);
-        AppDaoFactory.getAppDao(getDatastoreService()).putEvent(event);
-    }
-
-    private DatastoreService getDatastoreService()
-    {
-        if (_datastore == null) {
-            _datastore = DatastoreServiceFactory.getDatastoreService();
-            if (_datastore == null) {
-                log.info("Failed to acquire Datastore Service object");
-            }
-        }
-        return _datastore;
+        AppDaoFactory.getAppDao().putEvent(event);
     }
 
 }

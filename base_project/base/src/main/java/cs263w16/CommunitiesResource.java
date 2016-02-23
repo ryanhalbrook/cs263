@@ -1,17 +1,12 @@
 package cs263w16;
 
-import com.google.appengine.api.datastore.*;
 import cs263w16.AppDao.AppDaoFactory;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.*;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.logging.Logger;
 
 /**
@@ -20,18 +15,10 @@ import java.util.logging.Logger;
 @Path("/communities")
 public class CommunitiesResource {
 
-    // Allows to insert contextual objects into the class,
-    // e.g. ServletContext, Request, Response, UriInfo
-    @Context
-    UriInfo uriInfo;
-    @Context
-    Request request;
+    @Context UriInfo uriInfo;
+    @Context Request request;
 
-    private DatastoreService _datastore;
     private static final Logger log = Logger.getLogger(CommunitiesResource.class.getName());
-
-    private static HashMap<String, String> templates = null; // value is base64 encoded html content.
-
 
     // Add a new community
     @POST
@@ -39,32 +26,27 @@ public class CommunitiesResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public void newCommunity(@FormParam("communityid") String communityId,
                         @FormParam("description") String description,
-                        @Context HttpServletResponse servletResponse) throws IOException
-    {
-        Community community = new Community(communityId, description, new Date());
-        AppDaoFactory.getAppDao(getDatastoreService()).putCommunity(community);
-    }
+                        @Context HttpServletResponse servletResponse) throws IOException {
 
-    private DatastoreService getDatastoreService() {
-        if (_datastore == null) {
-            _datastore = DatastoreServiceFactory.getDatastoreService();
-            if (_datastore == null) {
-                log.info("Failed to acquire Datastore Service object");
-            }
-        }
-        return _datastore;
+        Community community = new Community(communityId, description, new Date());
+        AppDaoFactory.getAppDao().putCommunity(community);
+
     }
 
     // Defines that the next path parameter after communities is
     // treated as a parameter and passed to the CommunityResource
     @Path("{community}")
     public CommunityResource getCommunity(@PathParam("community") String id) {
+
         return new CommunityResource(uriInfo, request, id);
+
     }
 
     @Path("search")
     public CommunitiesSearchResource getCommunitiesSearch() {
+
         return new CommunitiesSearchResource(uriInfo, request);
+
     }
 
 

@@ -33,8 +33,6 @@ public class NewUserServlet extends HttpServlet {
         UserService userService = UserServiceFactory.getUserService();
         User user = userService.getCurrentUser();  // Find out who the user is.
 
-        String guestbookName = req.getParameter("guestbookName");
-        String content = req.getParameter("content");
         if (user != null) {
             AppUser newUser = new AppUser(user.getUserId(), emailAddress, userName, firstName, lastName, new Date());
             // Add the user to the datastore.

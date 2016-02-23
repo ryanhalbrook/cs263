@@ -1,6 +1,6 @@
 package cs263w16.AppDao;
 
-import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 
 /**
  * Created by ryanhalbrook on 2/13/16.
@@ -8,9 +8,9 @@ import com.google.appengine.api.datastore.DatastoreService;
 public class AppDaoFactory {
 
     private static AppDao instance;
-    public static AppDao getAppDao(DatastoreService datastore) {
+    public static AppDao getAppDao() {
         if (instance == null) {
-            instance = new Dao(datastore);
+            instance = new Dao(DatastoreServiceFactory.getDatastoreService());
         }
         return instance;
     }
