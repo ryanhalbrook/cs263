@@ -35,7 +35,7 @@
     User user = userService.getCurrentUser();
 
     // Check if the user is already in the datastore.
-    AppDao dao = AppDaoFactory.getAppDao(DatastoreServiceFactory.getDatastoreService());
+    AppDao dao = AppDaoFactory.getAppDao();
     AppUser appUser = dao.getUser(user.getUserId());
     if (appUser != null) {
         response.sendRedirect("/main.html");

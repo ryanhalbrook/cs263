@@ -20,8 +20,10 @@ public class CommunitiesSearchResource {
     private static final Logger log = Logger.getLogger(CommunitiesResource.class.getName());
 
     public CommunitiesSearchResource(UriInfo uriInfo, Request request) {
+
         this.uriInfo = uriInfo;
         this.request = request;
+
     }
 
     /*
@@ -31,17 +33,9 @@ public class CommunitiesSearchResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public List<Community> queryCommunities(@FormParam("prefix") String pattern) {
-        return AppDaoFactory.getAppDao(getDatastoreService()).queryCommunitiesPrefix(pattern);
-    }
 
-    private DatastoreService getDatastoreService() {
-        if (_datastore == null) {
-            _datastore = DatastoreServiceFactory.getDatastoreService();
-            if (_datastore == null) {
-                log.info("Failed to acquire Datastore Service object");
-            }
-        }
-        return _datastore;
+        return AppDaoFactory.getAppDao().queryCommunitiesPrefix(pattern);
+
     }
 
 }
