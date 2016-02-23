@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.*;
 import cs263w16.Community;
 import cs263w16.Event;
+import cs263w16.AppUser;
 
 import java.util.*;
 
@@ -17,6 +18,25 @@ public class Dao implements AppDao {
 
     public Dao(DatastoreService datastore) {
         this.datastore = datastore;
+    }
+
+    public AppUser getUser(String id) {
+        Key key = KeyFactory.createKey("AppUser", id);
+        AppUser user;
+        try {
+            Entity entity = datastore.get(key);
+            String emailAddress = (String)entity.getProperty("emailAddress");
+            String userName = (String)entity.getProperty("userName");
+            String firstName = (String)entity.getProperty("firstName");
+            String lastName = (String)entity.getProperty("lastName");
+            Date date = (Date)entity.getProperty("date");
+
+            user = new AppUser(id, emailAddress, userName, firstName, lastName, date);
+        } catch (EntityNotFoundException e) {
+            user = null;
+        }
+
+        return user;
     }
 
     public List<Event> eventsForCommunity(String communityName)

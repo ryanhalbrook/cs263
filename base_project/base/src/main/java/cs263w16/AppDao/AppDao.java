@@ -2,6 +2,7 @@ package cs263w16.AppDao;
 
 import cs263w16.Community;
 import cs263w16.Event;
+import cs263w16.AppUser;
 
 import java.util.List;
 
@@ -9,6 +10,8 @@ import java.util.List;
  * Created by ryanhalbrook on 2/13/16.
  */
 public interface AppDao {
+
+    public AppUser getUser(String id);
 
     public void putCommunity(Community community);
 

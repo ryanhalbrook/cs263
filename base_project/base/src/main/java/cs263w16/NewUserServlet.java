@@ -41,18 +41,18 @@ public class NewUserServlet extends HttpServlet {
             DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
             if (datastore != null) {
-                Entity taskData = new Entity("AppUser", user.getUserId());
-                taskData.setProperty("emailAddress", emailAddress);
-                taskData.setProperty("userName", userName);
-                taskData.setProperty("firstName", firstName);
-                taskData.setProperty("lastName", lastName);
-                taskData.setProperty("date", newUser.getSignupDate());
+                Entity userEntity = new Entity("AppUser", user.getUserId());
+                userEntity.setProperty("emailAddress", emailAddress);
+                userEntity.setProperty("userName", userName);
+                userEntity.setProperty("firstName", firstName);
+                userEntity.setProperty("lastName", lastName);
+                userEntity.setProperty("date", newUser.getSignupDate());
 
-                datastore.put(taskData);
+                datastore.put(userEntity);
             }
         }
 
 
-        resp.sendRedirect("/");
+        resp.sendRedirect("/main.html");
     }
 }

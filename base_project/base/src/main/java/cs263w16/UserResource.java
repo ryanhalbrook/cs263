@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 /**
  * Created by ryanhalbrook on 2/18/16.
  */
-@Path("activeuser")
+@Path("user")
 public class UserResource {
     @Context UriInfo uriInfo;
     @Context Request request;
@@ -31,6 +31,23 @@ public class UserResource {
     private DatastoreService _datastore;
     private static final Logger log = Logger.getLogger(CommunityResource.class.getName());
 
+    @Path("loginurl")
+    @GET
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    public StringXMLWrapper getLoginUrl() {
+        UserService userService = UserServiceFactory.getUserService();
+        return new StringXMLWrapper(userService.createLoginURL("/signup.jsp"));
+    }
+
+    @Path("logouturl")
+    @GET
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    public StringXMLWrapper getLogoutUrl() {
+        UserService userService = UserServiceFactory.getUserService();
+        return new StringXMLWrapper(userService.createLogoutURL("/main.html"));
+    }
+
+    @Path("activeuser")
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public AppUser getUser()
