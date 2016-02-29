@@ -1,4 +1,4 @@
-package cs263w16;
+package cs263w16.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;

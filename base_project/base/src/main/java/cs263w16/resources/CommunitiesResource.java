@@ -1,6 +1,8 @@
-package cs263w16;
+package cs263w16.resources;
 
-import cs263w16.AppDao.AppDaoFactory;
+import cs263w16.controllers.CommunitiesController;
+import cs263w16.controllers.DefaultCommunitiesController;
+import cs263w16.model.Community;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -19,6 +21,7 @@ public class CommunitiesResource {
     @Context Request request;
 
     private static final Logger log = Logger.getLogger(CommunitiesResource.class.getName());
+    private static CommunitiesController communitiesController = new DefaultCommunitiesController();
 
     // Add a new community
     @POST
@@ -29,7 +32,7 @@ public class CommunitiesResource {
                         @Context HttpServletResponse servletResponse) throws IOException {
 
         Community community = new Community(communityId, description, new Date());
-        AppDaoFactory.getAppDao().putCommunity(community);
+        communitiesController.putCommunity(community);
 
     }
 

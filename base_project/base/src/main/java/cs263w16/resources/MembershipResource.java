@@ -1,12 +1,9 @@
-package cs263w16;
+package cs263w16.resources;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import cs263w16.AppDao.AppDaoFactory;
+import cs263w16.controllers.DefaultMembershipsController;
+import cs263w16.controllers.MembershipsController;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.*;
@@ -25,6 +22,8 @@ public class MembershipResource {
 
     private String community;
 
+    public static MembershipsController membershipsController = new DefaultMembershipsController();
+
     public MembershipResource(UriInfo uriInfo, Request request, String community) {
 
         this.uriInfo = uriInfo;
@@ -39,7 +38,7 @@ public class MembershipResource {
                               @Context HttpHeaders headers) throws IOException {
 
         String user = headers.getRequestHeader("username").get(0);
-        AppDaoFactory.getAppDao().addMembership(user, community);
+        membershipsController.addMembership(user, community);
 
     }
 

@@ -1,10 +1,12 @@
-package cs263w16;
+package cs263w16.resources;
 
-import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 
 import com.google.appengine.api.users.UserServiceFactory;
-import cs263w16.AppDao.AppDaoFactory;
+import cs263w16.controllers.DefaultUsersController;
+import cs263w16.controllers.UsersController;
+import cs263w16.model.AppUser;
+import cs263w16.StringXMLWrapper;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -26,6 +28,8 @@ public class UserResource {
     @Context Request request;
 
     private static final Logger log = Logger.getLogger(CommunityResource.class.getName());
+
+    public static UsersController usersController = new DefaultUsersController();
 
     @Path("loginurl")
     @GET
@@ -53,9 +57,9 @@ public class UserResource {
     public AppUser getUser() {
 
         UserService userService = UserServiceFactory.getUserService();
-        User user = userService.getCurrentUser();
+        com.google.appengine.api.users.User user = userService.getCurrentUser();
 
-        return (user != null) ? AppDaoFactory.getAppDao().getUser(user.getUserId()) : null;
+        return (user != null) ? usersController.getUser(user.getUserId()) : null;
 
     }
 

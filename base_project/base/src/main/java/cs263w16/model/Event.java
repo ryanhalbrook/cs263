@@ -1,4 +1,4 @@
-package cs263w16;
+package cs263w16.model;
 
 import com.google.appengine.api.datastore.Key;
 

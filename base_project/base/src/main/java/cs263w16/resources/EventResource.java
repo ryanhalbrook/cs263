@@ -1,4 +1,4 @@
-package cs263w16;
+package cs263w16.resources;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;

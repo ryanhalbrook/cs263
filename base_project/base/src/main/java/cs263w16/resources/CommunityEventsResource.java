@@ -1,6 +1,5 @@
-package cs263w16;
+package cs263w16.resources;
 
-import cs263w16.AppDao.AppDaoFactory;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -11,6 +10,11 @@ import java.util.logging.Logger;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import cs263w16.controllers.CommunitiesController;
+import cs263w16.controllers.DefaultCommunitiesController;
+import cs263w16.controllers.DefaultEventsController;
+import cs263w16.controllers.EventsController;
+import cs263w16.model.Event;
 
 /**
  * Created by ryanhalbrook on 2/12/16.
@@ -22,6 +26,9 @@ public class CommunityEventsResource {
     @Context Request request;
 
     private static final Logger log = Logger.getLogger(CommunityResource.class.getName());
+
+    private static CommunitiesController communitiesController = new DefaultCommunitiesController();
+    private static EventsController eventsController = new DefaultEventsController();
 
     private String communityName;
 
@@ -39,7 +46,7 @@ public class CommunityEventsResource {
         UserService userService = UserServiceFactory.getUserService();
         User user = userService.getCurrentUser();  // Find out who the user is.
         System.out.println("The user is: " + user);
-        return AppDaoFactory.getAppDao().eventsForCommunity(communityName);
+        return communitiesController.eventsForCommunity(communityName);
     }
 
     @POST
@@ -50,7 +57,7 @@ public class CommunityEventsResource {
                              @Context HttpServletResponse servletResponse) throws IOException
     {
         Event event = new Event(name, description, communityName, false);
-        AppDaoFactory.getAppDao().putEvent(event);
+        eventsController.putEvent(event);
     }
 
 }

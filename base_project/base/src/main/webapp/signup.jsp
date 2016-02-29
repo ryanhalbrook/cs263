@@ -2,8 +2,8 @@
 <%@ page import="com.google.appengine.api.users.User" %>
 <%@ page import="com.google.appengine.api.users.UserService" %>
 <%@ page import="com.google.appengine.api.users.UserServiceFactory" %>
-<%@ page import="cs263w16.AppDao.*" %>
-<%@ page import="cs263w16.AppUser" %>
+<%@ page import="cs263w16.controllers.*" %>
+<%@ page import="cs263w16.model.AppUser" %>
 <%@ page import="com.google.appengine.api.datastore.DatastoreService" %>
 <%@ page import="com.google.appengine.api.datastore.DatastoreServiceFactory" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -35,8 +35,7 @@
     User user = userService.getCurrentUser();
 
     // Check if the user is already in the datastore.
-    AppDao dao = AppDaoFactory.getAppDao();
-    AppUser appUser = dao.getUser(user.getUserId());
+    AppUser appUser = (new DefaultUsersController()).getUser(user.getUserId());
     if (appUser != null) {
         response.sendRedirect("/main.html");
     }

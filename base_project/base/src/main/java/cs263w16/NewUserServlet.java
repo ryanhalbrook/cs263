@@ -3,14 +3,12 @@ package cs263w16;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import cs263w16.model.AppUser;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +29,7 @@ public class NewUserServlet extends HttpServlet {
         String userName = req.getParameter("inputUserName");
 
         UserService userService = UserServiceFactory.getUserService();
-        User user = userService.getCurrentUser();  // Find out who the user is.
+        com.google.appengine.api.users.User user = userService.getCurrentUser();  // Find out who the user is.
 
         if (user != null) {
             AppUser newUser = new AppUser(user.getUserId(), emailAddress, userName, firstName, lastName, new Date());
