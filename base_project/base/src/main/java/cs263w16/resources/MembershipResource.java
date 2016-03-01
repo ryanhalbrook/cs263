@@ -1,18 +1,26 @@
 package cs263w16.resources;
 
+import cs263w16.controllers.CommunitiesController;
+import cs263w16.controllers.DefaultCommunitiesController;
 import cs263w16.controllers.DefaultMembershipsController;
 import cs263w16.controllers.MembershipsController;
+import cs263w16.model.Community;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
  * Created by ryanhalbrook on 2/18/16.
  */
+@Path("/memberships")
 public class MembershipResource {
 
     @Context UriInfo uriInfo;
@@ -23,6 +31,7 @@ public class MembershipResource {
     private String community;
 
     public static MembershipsController membershipsController = new DefaultMembershipsController();
+    public static CommunitiesController communitiesController = new DefaultCommunitiesController();
 
     public MembershipResource(UriInfo uriInfo, Request request, String community) {
 
@@ -32,6 +41,8 @@ public class MembershipResource {
 
     }
 
+    public MembershipResource() {}
+
     @POST
     @Produces(MediaType.TEXT_HTML)
     public void newMembership(@Context HttpServletResponse servletResponse,
@@ -39,6 +50,28 @@ public class MembershipResource {
 
         String user = headers.getRequestHeader("username").get(0);
         membershipsController.addMembership(user, community);
+
+    }
+
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<Community> getMemberships(@Context HttpServletResponse servletResponse,
+                                          @Context HttpHeaders headers) {
+        String userId = headers.getRequestHeader("username").get(0);
+        if (userId == null) return null;
+
+        List<Community> communities = new ArrayList<>();
+        List<String> memberships = membershipsController.getMemberships(userId);
+        if (memberships == null) {
+            System.out.println("Memberships is null");
+        } else {
+            for (String membership : membershipsController.getMemberships(userId)) {
+                Community c = communitiesController.getCommunity(membership);
+                if (c != null) communities.add(c);
+            }
+        }
+
+        return communities;
 
     }
 

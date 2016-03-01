@@ -12,10 +12,10 @@
     <title>Homepage</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="starter-template.css" rel="stylesheet">
+    <link href="../starter-template.css" rel="stylesheet">
 
 </head>
 
@@ -62,9 +62,21 @@
     <div class="starter-template">
 
         <!--<p class="lead">Please <a href="<%= userService.createLoginURL(signupPage) %>">Sign Up</a> to get started</p>-->
+        <p id="user-info">Upcoming Events</p>
 
-        <p id="user-info"></p>
+        <div style="border:1px solid black;width:600px;height:400px;overflow-y:scroll;">
+        <table class="table">
+            <thead>
+                <td>Name</td>
+                <td>Description</td>
+                <td>Community</td>
+                <td>Date</td>
+            </thead>
+            <tbody id="events-body">
 
+            </tbody>
+        </table>
+        </div>
 
     </div>
 
@@ -76,8 +88,9 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-<script src="../js/bootstrap.min.js"></script>
+<script src="../moment/moment.js"></script>
+<script src="../bootstrap/js/bootstrap.min.js"></script>
 
-<script src="main.js"></script>
+<script src="../js/main.js"></script>
 </body>
 </html>

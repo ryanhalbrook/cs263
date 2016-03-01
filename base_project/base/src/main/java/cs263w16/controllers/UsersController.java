@@ -7,4 +7,6 @@ import cs263w16.model.AppUser;
  */
 public interface UsersController {
     public AppUser getUser(String id);
+    public AppUser getUserByUserName(String username);
+    public void addUser(AppUser appUser);
 }

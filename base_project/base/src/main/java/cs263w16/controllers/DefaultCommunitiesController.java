@@ -100,6 +100,8 @@ public class DefaultCommunitiesController implements CommunitiesController {
                             (String)entity.getProperty("description"),
                             (String)entity.getProperty("communityName"),
                             (Boolean)entity.getProperty("publiclyAvailable"));
+            event.setEventDate((Date)entity.getProperty("eventDate"));
+
             events.add(event);
         }
 

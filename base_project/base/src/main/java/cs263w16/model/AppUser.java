@@ -2,6 +2,7 @@ package cs263w16.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
+import java.util.List;
 /**
  * Created by ryanhalbrook on 2/4/16.
  */
@@ -19,6 +20,7 @@ public class AppUser {
     private String firstName;
     private String lastName;
     private Date signupDate;
+    private List<String> memberships;
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -71,5 +73,8 @@ public class AppUser {
         return signupDate;
     }
     public void setSignupDate(Date date) { this.signupDate = signupDate; }
+
+    public List<String>getMemberships() { return memberships; }
+    public void setMemberships(List<String> memberships) { this.memberships = memberships; }
 
 }

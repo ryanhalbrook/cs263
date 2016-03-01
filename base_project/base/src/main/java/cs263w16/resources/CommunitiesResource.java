@@ -9,6 +9,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -35,6 +36,8 @@ public class CommunitiesResource {
         communitiesController.putCommunity(community);
 
     }
+
+
 
     // Defines that the next path parameter after communities is
     // treated as a parameter and passed to the CommunityResource

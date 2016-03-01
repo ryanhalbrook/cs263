@@ -1,6 +1,5 @@
 package cs263w16.resources;
 
-import com.google.appengine.api.datastore.*;
 import cs263w16.controllers.CommunitiesController;
 import cs263w16.controllers.DefaultCommunitiesController;
 import cs263w16.model.Community;
@@ -17,8 +16,6 @@ public class CommunitiesSearchResource {
 
     @Context UriInfo uriInfo;
     @Context Request request;
-
-    DatastoreService _datastore;
 
     private static final Logger log = Logger.getLogger(CommunitiesResource.class.getName());
     private static CommunitiesController communitiesController = new DefaultCommunitiesController();

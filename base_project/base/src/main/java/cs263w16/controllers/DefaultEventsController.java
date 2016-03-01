@@ -23,6 +23,7 @@ public class DefaultEventsController implements EventsController {
         entity.setProperty("description", event.getDescription());
         entity.setProperty("communityName", event.getCommunityName());
         entity.setProperty("publiclyAvailable", event.isPubliclyAvailable());
+        entity.setProperty("eventDate", event.getEventDate());
 
         datastore.put(entity);
     }

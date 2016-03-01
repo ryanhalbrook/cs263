@@ -1,6 +1,15 @@
-body {
-  padding-top: 50px;
-}
 .starter-template {
-  padding: 40px 15px;
+    padding: 40px 15px;
+}
+body {
+    background-color:#45455A;
+    color: white;
+}
+
+.user-community:hover {
+    background-color:#333;
+}
+
+.user-community {
+    cursor:pointer;
 }

@@ -1,6 +1,7 @@
 package cs263w16.controllers;
 
 import com.google.appengine.api.datastore.*;
+import cs263w16.model.AppUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ public class DefaultMembershipsController implements MembershipsController {
 
     private DatastoreService datastore;
 
+    private static UsersController usersController = new DefaultUsersController();
     public DefaultMembershipsController() {
         this.datastore = DatastoreServiceFactory.getDatastoreService();
     }
@@ -41,5 +43,18 @@ public class DefaultMembershipsController implements MembershipsController {
 
         datastore.put(entity);
 
+    }
+
+    public List<String> getMemberships(String userId) {
+        AppUser appUser = usersController.getUser(userId);
+        if (appUser == null) System.out.println("Could not find user");
+        if (appUser.getMemberships() == null) {
+            System.out.println("no memberships");
+        } else {
+            for (String m : appUser.getMemberships()) {
+                System.out.println(m);
+            }
+        }
+        return (appUser != null) ? appUser.getMemberships() : null;
     }
 }

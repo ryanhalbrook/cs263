@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import com.google.appengine.api.users.User;
@@ -15,6 +17,9 @@ import cs263w16.controllers.DefaultCommunitiesController;
 import cs263w16.controllers.DefaultEventsController;
 import cs263w16.controllers.EventsController;
 import cs263w16.model.Event;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * Created by ryanhalbrook on 2/12/16.
@@ -52,11 +57,15 @@ public class CommunityEventsResource {
     @POST
     @Produces(MediaType.TEXT_HTML)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public void newCommunity(@FormParam("name") String name,
+    public void newEvent(@FormParam("name") String name,
                              @FormParam("description") String description,
+                             @FormParam("date") String date,
                              @Context HttpServletResponse servletResponse) throws IOException
     {
         Event event = new Event(name, description, communityName, false);
+        DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+        DateTime dt = fmt.parseDateTime(date);
+        event.setEventDate(dt.toDate());
         eventsController.putEvent(event);
     }
 
