@@ -7,10 +7,7 @@ import cs263w16.controllers.MembershipsController;
 import cs263w16.model.Community;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,6 +48,14 @@ public class MembershipResource {
         String user = headers.getRequestHeader("username").get(0);
         membershipsController.addMembership(user, community);
 
+    }
+
+    @DELETE
+    @Produces(MediaType.TEXT_HTML)
+    public void deleteMembership(@Context HttpServletResponse servletResponse,
+                                 @Context HttpHeaders headers) {
+        String user = headers.getRequestHeader("username").get(0);
+        membershipsController.removeMembership(user, community);
     }
 
     @GET

@@ -21,8 +21,6 @@ public class DefaultMembershipsController implements MembershipsController {
     public void addMembership(String user, String community) {
         // TODO add checks.
 
-        System.out.println("Username: " + user);
-
         Query.Filter keyFilter =
                 new Query.FilterPredicate("userName",
                         Query.FilterOperator.EQUAL,
@@ -43,6 +41,16 @@ public class DefaultMembershipsController implements MembershipsController {
 
         datastore.put(entity);
 
+    }
+
+    public void removeMembership(String userId, String community) {
+        AppUser appUser = usersController.getUser(userId);
+        if (appUser == null) return;
+        List<String> memberships = appUser.getMemberships();
+        if (memberships != null) {
+            memberships.remove(community);
+        }
+        usersController.addUser(appUser);
     }
 
     public List<String> getMemberships(String userId) {

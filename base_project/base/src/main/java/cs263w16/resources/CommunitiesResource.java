@@ -34,6 +34,7 @@ public class CommunitiesResource {
 
         Community community = new Community(communityId, description, new Date());
         communitiesController.putCommunity(community);
+        servletResponse.sendRedirect("/html/communities.html");
 
     }
 

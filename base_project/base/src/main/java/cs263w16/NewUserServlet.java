@@ -41,11 +41,11 @@ public class NewUserServlet extends HttpServlet {
 
             // Add the google user as a user of this application.
 
-            AppUser newUser = new AppUser(user.getUserId(), emailAddress, user.getUserId(), firstName, lastName, new Date());
+            AppUser newUser = new AppUser(emailAddress, emailAddress, emailAddress, firstName, lastName, new Date());
             usersController.addUser(newUser);
         }
 
 
-        resp.sendRedirect("/main.html");
+        resp.sendRedirect("/html/main.html");
     }
 }

@@ -65,22 +65,17 @@
         <div class="row">
             <div class="col-md-8">
 
-                <h3>Your Communities</h3>
-                <table class="table">
-                    <tbody id="communities-body">
-                    </tbody>
-                </table>
+                <a href="communities.html">Back to My Communities</a>
+
+                <h3 id="community-name"></h3>
+                <p id="community-desc"></p>
 
 
             </div>
             <div class="col-md-4">
 
-                <div class="input-group">
-                    <input id="search-field" type="text" class="form-control" placeholder="Search communities...">
-                    <span class="input-group-btn">
-                        <button id="search-button" class="btn btn-default" type="button">Search</button>
-                    </span>
-                </div><!-- /input-group -->
+
+                <button type="submit" class="btn btn-default" id="join-button">Join Community</button>
 
                 <span id="search-info" style="font-size: 10px; color: gray;"></span>
 
@@ -88,19 +83,8 @@
                     <tbody id="results-body">
                     </tbody>
                 </table>
-
-                <a href="newcommunity.html">Start a Community!</a>
             </div>
         </div>
-
-
-
-        <!--<p class="lead">Please <a href="<%= userService.createLoginURL(signupPage) %>">Sign Up</a> to get started</p>-->
-
-
-
-
-
 
     </div>
 
@@ -116,6 +100,6 @@
 <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
 <script src="../bootstrap/js/bootstrap.min.js"></script>
 
-<script src="../js/communities.js"></script>
+<script src="../js/community.js"></script>
 </body>
 </html>

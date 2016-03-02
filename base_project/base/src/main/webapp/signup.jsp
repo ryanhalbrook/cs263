@@ -35,7 +35,7 @@
     User user = userService.getCurrentUser();
 
     // Check if the user is already in the datastore.
-    AppUser appUser = (new DefaultUsersController()).getUser(user.getUserId());
+    AppUser appUser = (new DefaultUsersController()).getUser(user.getEmail());
     if (appUser != null) {
         response.sendRedirect("/main.html");
     }

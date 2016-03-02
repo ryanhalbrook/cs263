@@ -6,10 +6,6 @@ body {
     color: white;
 }
 
-.user-community:hover {
-    background-color:#333;
-}
-
 .user-community {
     cursor:pointer;
 }

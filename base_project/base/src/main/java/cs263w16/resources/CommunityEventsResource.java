@@ -50,7 +50,6 @@ public class CommunityEventsResource {
     {
         UserService userService = UserServiceFactory.getUserService();
         User user = userService.getCurrentUser();  // Find out who the user is.
-        System.out.println("The user is: " + user);
         return communitiesController.eventsForCommunity(communityName);
     }
 

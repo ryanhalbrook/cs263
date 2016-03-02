@@ -7,5 +7,6 @@ import java.util.List;
  */
 public interface MembershipsController {
     public void addMembership(String user, String community);
+    public void removeMembership(String userId, String community);
     public List<String> getMemberships(String userId);
 }

@@ -59,7 +59,7 @@ public class UserResource {
         UserService userService = UserServiceFactory.getUserService();
         com.google.appengine.api.users.User user = userService.getCurrentUser();
 
-        return (user != null) ? usersController.getUser(user.getUserId()) : null;
+        return (user != null) ? usersController.getUser(user.getEmail()) : null;
 
     }
 

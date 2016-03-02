@@ -65,22 +65,37 @@
         <div class="row">
             <div class="col-md-8">
 
-                <h3>Your Communities</h3>
-                <table class="table">
-                    <tbody id="communities-body">
-                    </tbody>
-                </table>
+                <a href="communities.html">Back to My Communities</a>
+
+                <h3>Create a Community!</h3>
+                <form action="/rest/communities" method="post">
+                    <div class="form-group">
+                        <label for="communityName">Name</label>
+                        <input type="text" name="communityid" class="form-control" id="communityid">
+                    </div>
+                    <div class="form-group">
+                        <label for="communityDescription">Description</label>
+                        <input type="text" name="description" class="form-control" id="description">
+                    </div>
+                    <!--
+                    <div class="form-group">
+                        <label for="logoFile">File input</label>
+                        <input type="file" id="logoFile">
+                        <p class="help-block">Upload a community logo.</p>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox">Public
+                        </label>
+                    </div>
+                    -->
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </form>
 
 
             </div>
             <div class="col-md-4">
 
-                <div class="input-group">
-                    <input id="search-field" type="text" class="form-control" placeholder="Search communities...">
-                    <span class="input-group-btn">
-                        <button id="search-button" class="btn btn-default" type="button">Search</button>
-                    </span>
-                </div><!-- /input-group -->
 
                 <span id="search-info" style="font-size: 10px; color: gray;"></span>
 
@@ -88,19 +103,8 @@
                     <tbody id="results-body">
                     </tbody>
                 </table>
-
-                <a href="newcommunity.html">Start a Community!</a>
             </div>
         </div>
-
-
-
-        <!--<p class="lead">Please <a href="<%= userService.createLoginURL(signupPage) %>">Sign Up</a> to get started</p>-->
-
-
-
-
-
 
     </div>
 
@@ -116,6 +120,6 @@
 <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
 <script src="../bootstrap/js/bootstrap.min.js"></script>
 
-<script src="../js/communities.js"></script>
+<!--<script src="../js/communities.js"></script>-->
 </body>
 </html>

@@ -29,7 +29,7 @@ public class DefaultUsersController implements UsersController {
             String lastName = (String)entity.getProperty("lastName");
             Date date = (Date)entity.getProperty("date");
             ArrayList<String> memberships = (ArrayList<String>)entity.getProperty("memberships");
-            System.out.println("count(memberships): " + memberships.size());
+            if (memberships != null) System.out.println("count(memberships): " + memberships.size());
 
             user = new AppUser(id, emailAddress, userName, firstName, lastName, date);
             user.setMemberships(memberships);
@@ -37,6 +37,7 @@ public class DefaultUsersController implements UsersController {
 
         } catch (EntityNotFoundException e) {
             user = null;
+            System.out.println("User not found: " + id);
         }
 
         return user;
@@ -78,6 +79,7 @@ public class DefaultUsersController implements UsersController {
         userEntity.setProperty("firstName", appUser.getFirstName());
         userEntity.setProperty("lastName", appUser.getLastName());
         userEntity.setProperty("date", appUser.getSignupDate());
+        userEntity.setProperty("memberships", appUser.getMemberships());
 
         datastore.put(userEntity);
     }
