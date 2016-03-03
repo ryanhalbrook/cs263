@@ -1,7 +1,7 @@
 package cs263w16.resources;
 
-import cs263w16.controllers.CommunitiesController;
-import cs263w16.controllers.DefaultCommunitiesController;
+import cs263w16.datasources.CommunitiesDataSource;
+import cs263w16.datasources.DefaultCommunitiesDataSource;
 import cs263w16.model.Community;
 
 import javax.ws.rs.*;
@@ -18,7 +18,7 @@ public class CommunitiesSearchResource {
     @Context Request request;
 
     private static final Logger log = Logger.getLogger(CommunitiesResource.class.getName());
-    private static CommunitiesController communitiesController = new DefaultCommunitiesController();
+    private static CommunitiesDataSource communitiesDataSource = new DefaultCommunitiesDataSource();
 
     public CommunitiesSearchResource(UriInfo uriInfo, Request request) {
 
@@ -35,7 +35,7 @@ public class CommunitiesSearchResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public List<Community> queryCommunities(@FormParam("prefix") String pattern) {
 
-        return communitiesController.queryCommunitiesPrefix(pattern);
+        return communitiesDataSource.queryCommunitiesPrefix(pattern);
 
     }
 

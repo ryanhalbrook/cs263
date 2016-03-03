@@ -12,7 +12,7 @@ function leaveCommunity(event) {
     fetchUserCommunities(event.data.username);
 }
 
-function fetchUserCommunities(username) {
+function fetchUserCommunities(userId) {
 
     var displayCommunities = function (data) {
 
@@ -25,14 +25,14 @@ function fetchUserCommunities(username) {
 
             var leaveButton = "<button type=\"submit\" class=\"btn btn-default\" id=\"" + id + "\">Leave Community</button>";
             $( "#communities-body" ).append("<tr><td>" + community.id + "</td><td>" + leaveButton + "</td></tr>");
-            $("#" + id).bind("click", {communityid: community.id, username: username}, leaveCommunity);
+            $("#" + id).bind("click", {communityid: community.id, username: userId}, leaveCommunity);
 
 
         }
 
     }
 
-    getResourceWithUsername("/rest/memberships", username, displayCommunities);
+    getResourceWithUsername("/rest/memberships", userId, displayCommunities);
 
 }
 
@@ -48,7 +48,7 @@ function userInfoCallback(data) {
             }
         );
         window.user = data;
-        fetchUserCommunities(data.userName);
+        fetchUserCommunities(data.userId);
 
     } else {
 

@@ -1,55 +1,61 @@
-package cs263w16.controllers;
+package cs263w16.datasources;
 
 import com.google.appengine.api.datastore.*;
 import cs263w16.model.Community;
 import cs263w16.model.Event;
+import cs263w16.resources.CommunityResource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by ryanhalbrook on 2/28/16.
  */
-public class DefaultCommunitiesController implements CommunitiesController {
+public class DefaultCommunitiesDataSource implements CommunitiesDataSource {
 
     private DatastoreService datastore;
+    private static final Logger log = Logger.getLogger(CommunityResource.class.getName());
 
-    public DefaultCommunitiesController() {
+    public DefaultCommunitiesDataSource() {
         this.datastore = DatastoreServiceFactory.getDatastoreService();
     }
 
-    public void putCommunity(Community community)
-    {
+    public void addCommunity(Community community) {
+
+        if (getCommunity(community.getId()) != null) {
+            log.warning("Attempt to add a community that already exists in the data source");
+            return;
+        }
+
         Entity entity = new Entity("Community", community.getId());
         entity.setProperty("description", community.getDescription());
         entity.setProperty("creationDate", community.getCreationDate());
 
-        datastore.put(entity);
-    }
+        try {
+            datastore.put(entity);
+        } catch (Exception e) {
+            log.warning("Exception thrown attempting to add a new community");
+        }
 
-    /* Fails if there are events that point to this community */
-    public void deleteCommunity(String communityName) {
-        // TODO stub
     }
 
     public Community getCommunity(String communityName) {
-        Community community = null;
+        Community community;
         try {
             Entity entity = datastore.get(KeyFactory.createKey("Community", communityName));
             community = new Community(communityName, (String)entity.getProperty("description"), (Date)entity.getProperty("creationDate"));
         } catch (EntityNotFoundException e) {
-
+            community = null;
+            log.info("Could not find a community that was requested");
         }
         return community;
     }
 
     public List<Community> queryCommunitiesPrefix(String pattern) {
         List <Community> matchingCommunities = new ArrayList<>();
-
-        System.out.println("Pattern = " + pattern);
-
 
         // Prefix Search Technique Information:
         // http://stackoverflow.com/questions/47786/google-app-engine-is-it-possible-to-do-a-gql-like-query
@@ -84,8 +90,8 @@ public class DefaultCommunitiesController implements CommunitiesController {
         return matchingCommunities;
     }
 
-    public List<Event> eventsForCommunity(String communityName)
-    {
+    public List<Event> eventsForCommunity(String communityName) {
+
         Query.Filter keyFilter =
                 new Query.FilterPredicate("communityName",
                         Query.FilterOperator.EQUAL,
@@ -93,6 +99,9 @@ public class DefaultCommunitiesController implements CommunitiesController {
         Query q = new Query("Event").setFilter(keyFilter);
 
         List<Entity> entities = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+
+        if (entities == null) return new ArrayList<Event>();
+
         List<Event> events = new ArrayList<>();
         for (Entity entity : entities) {
             Event event =

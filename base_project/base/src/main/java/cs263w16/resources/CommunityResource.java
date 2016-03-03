@@ -1,7 +1,7 @@
 package cs263w16.resources;
 
-import cs263w16.controllers.CommunitiesController;
-import cs263w16.controllers.DefaultCommunitiesController;
+import cs263w16.datasources.CommunitiesDataSource;
+import cs263w16.datasources.DefaultCommunitiesDataSource;
 import cs263w16.model.Community;
 
 import javax.ws.rs.*;
@@ -21,7 +21,7 @@ public class CommunityResource {
 
     private String communityName;
 
-    private static CommunitiesController communitiesController = new DefaultCommunitiesController();
+    private static CommunitiesDataSource communitiesDataSource = new DefaultCommunitiesDataSource();
 
     public CommunityResource(UriInfo uriInfo, Request request, String communityId) {
 
@@ -35,7 +35,7 @@ public class CommunityResource {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Community getCommunity() {
 
-        Community community = communitiesController.getCommunity(this.communityName);
+        Community community = communitiesDataSource.getCommunity(this.communityName);
         if (community == null) {
             throw new RuntimeException("Get: Community with " + communityName +  " not found");
         }
@@ -44,13 +44,15 @@ public class CommunityResource {
 
     }
 
+
+    /* TODO: modifying an existing community */
     @PUT
     @Consumes(MediaType.APPLICATION_XML)
     public Response putCommunity(String description) {
 
         Response res = null;
 
-        Community result = communitiesController.getCommunity(this.communityName);
+        Community result = communitiesDataSource.getCommunity(this.communityName);
 
         //first check if the Entity exists in the datastore
         if (result == null) {
@@ -58,28 +60,13 @@ public class CommunityResource {
         } else {
             //update the entity
             result.setDescription(description);
-            communitiesController.putCommunity(result);
+            communitiesDataSource.addCommunity(result);
 
             //signal that we updated the entity
             res = Response.noContent().build();
         }
 
         return res;
-
-    }
-
-    // Delete this community. Fails if their are any events refering to this community (Not yet).
-    @DELETE
-    public void deleteIt() {
-
-        //delete an entity from the datastore
-        //just print a message upon exception (don't throw)
-
-        try {
-            communitiesController.deleteCommunity(this.communityName);
-        } catch (Exception e) {
-            System.out.println("Failed to delete object from datastore");
-        }
 
     }
 

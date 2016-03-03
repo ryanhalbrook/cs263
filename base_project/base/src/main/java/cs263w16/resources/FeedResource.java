@@ -1,16 +1,15 @@
 package cs263w16.resources;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.*;
 
-import cs263w16.controllers.CommunitiesController;
-import cs263w16.controllers.DefaultCommunitiesController;
-import cs263w16.controllers.DefaultUsersController;
-import cs263w16.controllers.UsersController;
+import cs263w16.datasources.CommunitiesDataSource;
+import cs263w16.datasources.DefaultCommunitiesDataSource;
+import cs263w16.datasources.DefaultUsersDataSource;
+import cs263w16.datasources.UsersDataSource;
 import cs263w16.model.Event;
 
 import java.util.ArrayList;
@@ -24,8 +23,8 @@ public class FeedResource {
     @Context UriInfo uriInfo;
     @Context Request request;
 
-    public static UsersController usersController = new DefaultUsersController();
-    public static CommunitiesController communitiesController = new DefaultCommunitiesController();
+    public static UsersDataSource usersDataSource = new DefaultUsersDataSource();
+    public static CommunitiesDataSource communitiesDataSource = new DefaultCommunitiesDataSource();
 
 
     @GET
@@ -36,8 +35,8 @@ public class FeedResource {
 
         List<Event> events = new ArrayList<>();
 
-        for (String community : usersController.getUser(userId).getMemberships()) {
-            events.addAll(communitiesController.eventsForCommunity(community));
+        for (String community : usersDataSource.getUser(userId).getMemberships()) {
+            events.addAll(communitiesDataSource.eventsForCommunity(community));
         }
 
         return events;

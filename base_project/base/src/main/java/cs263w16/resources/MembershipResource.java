@@ -1,10 +1,7 @@
 package cs263w16.resources;
 
-import cs263w16.controllers.CommunitiesController;
-import cs263w16.controllers.DefaultCommunitiesController;
-import cs263w16.controllers.DefaultMembershipsController;
-import cs263w16.controllers.MembershipsController;
-import cs263w16.model.Community;
+import cs263w16.datasources.*;
+import cs263w16.model.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -27,8 +24,8 @@ public class MembershipResource {
 
     private String community;
 
-    public static MembershipsController membershipsController = new DefaultMembershipsController();
-    public static CommunitiesController communitiesController = new DefaultCommunitiesController();
+    public static MembershipsDataSource membershipsDataSource = new DefaultMembershipsDataSource();
+    public static CommunitiesDataSource communitiesDataSource = new DefaultCommunitiesDataSource();
 
     public MembershipResource(UriInfo uriInfo, Request request, String community) {
 
@@ -46,7 +43,7 @@ public class MembershipResource {
                               @Context HttpHeaders headers) throws IOException {
 
         String user = headers.getRequestHeader("username").get(0);
-        membershipsController.addMembership(user, community);
+        membershipsDataSource.addMembership(user, community);
 
     }
 
@@ -55,7 +52,7 @@ public class MembershipResource {
     public void deleteMembership(@Context HttpServletResponse servletResponse,
                                  @Context HttpHeaders headers) {
         String user = headers.getRequestHeader("username").get(0);
-        membershipsController.removeMembership(user, community);
+        membershipsDataSource.removeMembership(user, community);
     }
 
     @GET
@@ -66,12 +63,12 @@ public class MembershipResource {
         if (userId == null) return null;
 
         List<Community> communities = new ArrayList<>();
-        List<String> memberships = membershipsController.getMemberships(userId);
+        List<String> memberships = membershipsDataSource.getMemberships(userId);
         if (memberships == null) {
             System.out.println("Memberships is null");
         } else {
-            for (String membership : membershipsController.getMemberships(userId)) {
-                Community c = communitiesController.getCommunity(membership);
+            for (String membership : membershipsDataSource.getMemberships(userId)) {
+                Community c = communitiesDataSource.getCommunity(membership);
                 if (c != null) communities.add(c);
             }
         }

@@ -48,7 +48,7 @@ $( document ).ready(function() {
                 var communityid = urlParams["communityid"]
 
                 if (urlParams["communityid"]) {
-                    fetchCommunity(communityid, data.userName);
+                    fetchCommunity(communityid, data.userId);
                 }
 
             } else {

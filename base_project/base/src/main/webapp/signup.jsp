@@ -20,7 +20,7 @@
     <title>Homepage</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="starter-template.css" rel="stylesheet">
@@ -45,27 +45,40 @@
 <div class="container">
 
     <div class="starter-template">
-        <h1>Sign Up</h1>
-        <p class="lead">Welcome. Please enter some quick information and you are all set. </p>
-        <form action="/newuser"  method="post">
-         <div class="form-group">
-           <label for="inputEmail">Email address</label>
-           <input type="email" class="form-control" name="inputEmail" placeholder="test@example.com">
-         </div>
-         <div class="form-group">
-           <label for="inputFirstName">First Name</label>
-           <input type="text" class="form-control" name="inputFirstName" placeholder="">
-         </div>
-         <div class="form-group">
-           <label for="inputLastName">Last Name</label>
-           <input type="text" class="form-control" name="inputLastName" placeholder="">
-         </div>
-         <div class="form-group">
-           <label for="inputUserName">User Name</label>
-           <input type="text" class="form-control" name="inputUserName" placeholder="">
-         </div>
-         <button type="submit" class="btn btn-default">Continue</button>
-        </form>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h1>Sign Up</h1>
+                <p class="lead">Welcome. Please enter some quick information and you are all set. </p>
+                <form action="/rest/user" method="post">
+                 <div class="form-group">
+                   <label for="inputEmail">Email address</label>
+                   <input type="email" class="form-control" name="inputEmail" placeholder="test@example.com">
+                 </div>
+                 <div class="form-group">
+                   <label for="inputFirstName">First Name</label>
+                   <input type="text" class="form-control" name="inputFirstName" placeholder="">
+                 </div>
+                 <div class="form-group">
+                   <label for="inputLastName">Last Name</label>
+                   <input type="text" class="form-control" name="inputLastName" placeholder="">
+                 </div>
+                 <div class="form-group">
+                   <label for="inputUserName">User Name</label>
+                   <input type="text" class="form-control" name="inputUserName" placeholder="">
+                 </div>
+                 <button type="submit" class="btn btn-default">Continue</button>
+                </form>
+
+            </div>
+            <div class="col-md-8">
+
+
+
+            </div>
+
+        </div>
+
 
     </div>
 
@@ -78,6 +91,6 @@
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-<script src="../js/bootstrap.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>

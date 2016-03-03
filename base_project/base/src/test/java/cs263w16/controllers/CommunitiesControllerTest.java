@@ -1,20 +1,19 @@
 package cs263w16.controllers;
 
-import com.google.appengine.api.datastore.KeyFactory;
+import cs263w16.datasources.CommunitiesDataSource;
+import cs263w16.datasources.DefaultCommunitiesDataSource;
 import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by ryanhalbrook on 2/29/16.
  */
 public class CommunitiesControllerTest {
 
-    private static CommunitiesController communitiesController;
+    private static CommunitiesDataSource communitiesController;
 
     @BeforeClass
     public void setup () {
-        communitiesController = new DefaultCommunitiesController();
+        communitiesController = new DefaultCommunitiesDataSource();
     }
 
     /*

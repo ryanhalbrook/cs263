@@ -1,19 +1,16 @@
-package cs263w16.controllers;
+package cs263w16.datasources;
 
 import com.google.appengine.api.datastore.*;
 import cs263w16.model.Event;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by ryanhalbrook on 2/28/16.
  */
-public class DefaultEventsController implements EventsController {
+public class DefaultEventsDataSource implements EventsDataSource {
 
     private DatastoreService datastore;
 
-    public DefaultEventsController() {
+    public DefaultEventsDataSource() {
         this.datastore = DatastoreServiceFactory.getDatastoreService();
     }
 
