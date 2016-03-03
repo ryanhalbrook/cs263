@@ -25,6 +25,10 @@ public class DefaultCommunitiesDataSource implements CommunitiesDataSource {
 
     public void addCommunity(Community community) {
 
+        if (community == null || community.getId() == null || community.getId().equals("")) {
+            return;
+        }
+
         if (getCommunity(community.getId()) != null) {
             log.warning("Attempt to add a community that already exists in the data source");
             return;
@@ -43,6 +47,9 @@ public class DefaultCommunitiesDataSource implements CommunitiesDataSource {
     }
 
     public Community getCommunity(String communityName) {
+        if (communityName == null || communityName.equals("")) {
+            return null;
+        }
         Community community;
         try {
             Entity entity = datastore.get(KeyFactory.createKey("Community", communityName));
@@ -55,6 +62,10 @@ public class DefaultCommunitiesDataSource implements CommunitiesDataSource {
     }
 
     public List<Community> queryCommunitiesPrefix(String pattern) {
+
+        if (pattern == null) {
+            return null;
+        }
         List <Community> matchingCommunities = new ArrayList<>();
 
         // Prefix Search Technique Information:
