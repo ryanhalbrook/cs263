@@ -36,8 +36,8 @@
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a href="main.html">Feed</a></li>
-                <li class="active"><a href="communities.html">Communities</a></li>
-                <li><a href="profile.html">Profile</a></li>
+                <li><a href="communities.html">Communities</a></li>
+                <li class="active"><a href="profile.html">Profile</a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
@@ -63,40 +63,27 @@
     <div class="starter-template">
 
         <div class="row">
-            <div class="col-md-8">
 
-                <h3>Your Communities</h3>
-                <table class="table">
-                    <tbody id="communities-body">
-                    </tbody>
-                </table>
-
-
+            <div style="float:left;padding:16px;">
+                <img src="http://cdni.wired.co.uk/1920x1280/g_j/GOOGLELOGO_1.jpg" style="width:256px; height:256px;"/>
             </div>
-            <div class="col-md-4">
 
-                <div class="input-group">
-                    <input id="search-field" type="text" class="form-control" placeholder="Search communities...">
-                    <span class="input-group-btn">
-                        <button id="search-button" class="btn btn-default" type="button">Search</button>
-                    </span>
-                </div><!-- /input-group -->
-
-                <span id="search-info" style="font-size: 10px; color: gray;"></span>
-
-                <table class="table">
-                    <tbody id="results-body">
-                    </tbody>
-                </table>
-
-                <a href="newcommunity.html">Start a Community!</a>
+            <div style="float:left; padding-left:16px;">
+                <h3 id = "fullname" style="margin-bottom:32px;">First Last</h3>
+                <p>Email Address: <span id="email">test@example.com</span></p>
+                <p>User Name: <span id="username">username</span></p>
+                <p>Memberships: <span id="membership-count">counting...</span></p>
+                <a href="#">Edit Profile</a>
             </div>
+
         </div>
 
-
-
-        <!--<p class="lead">Please <a href="<%= userService.createLoginURL(signupPage) %>">Sign Up</a> to get started</p>-->
-
+        <div class="row" style="background-color:#55556A;margin-top:64px;">
+            <div style="float:left;padding-left:16px;">
+                <h3>Manage Communities</h3>
+                <p>You are an admin for the following communities. You may add events and update or hide communities here.</p>
+            </div>
+        </div>
 
     </div>
 
@@ -112,6 +99,6 @@
 <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
 <script src="../bootstrap/js/bootstrap.min.js"></script>
 
-<script src="../js/communities.js"></script>
+<script src="../js/profile.js"></script>
 </body>
 </html>

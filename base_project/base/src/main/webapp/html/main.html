@@ -32,14 +32,15 @@
             </button>
             <a class="navbar-brand" href="#"></a>
         </div>
+
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Feed</a></li>
+                <li class="active"><a href="main.html">Feed</a></li>
                 <li><a href="communities.html">Communities</a></li>
-                <li><a href="#contact">About</a></li>
+                <li><a href="profile.html">Profile</a></li>
             </ul>
 
-            <ul id="user-dropdown" class="nav navbar-nav navbar-right">
+            <ul id="user-dropdown" class="nav navbar-nav navbar-right" style="visibility:hidden;">
             <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span id="user-dropdown-title">Name</span><span class="caret"></span></a>
                 <ul class="dropdown-menu">
@@ -53,6 +54,10 @@
             </li>
             </ul>
 
+            <ul id="user-login" class="nav navbar-nav navbar-right" style="visibility:hidden;">
+                <li id="loginurl"></li>
+            </ul>
+
         </div><!--/.nav-collapse -->
     </div>
 </nav>
@@ -62,20 +67,25 @@
     <div class="starter-template">
 
         <!--<p class="lead">Please <a href="<%= userService.createLoginURL(signupPage) %>">Sign Up</a> to get started</p>-->
-        <p id="user-info">Upcoming Events</p>
+        <p id="user-info"></p>
 
-        <div style="border:1px solid black;width:600px;height:400px;overflow-y:scroll;">
-        <table class="table">
-            <thead>
-                <td>Name</td>
-                <td>Description</td>
-                <td>Community</td>
-                <td>Date</td>
-            </thead>
-            <tbody id="events-body">
+        <div id="upcoming-events" style="visibility:hidden;">
+            <h3>Upcoming Events</h3>
 
-            </tbody>
-        </table>
+            <div style="border:1px solid black;width:600px;height:400px;overflow-y:scroll;">
+            <table class="table">
+                <thead>
+                    <td>Name</td>
+                    <td>Description</td>
+                    <td>Community</td>
+                    <td>Date</td>
+                </thead>
+                <tbody id="events-body">
+
+                </tbody>
+            </table>
+            </div>
+
         </div>
 
     </div>

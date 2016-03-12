@@ -4,7 +4,7 @@
 
 $.getScript("/js/flatfish.js");
 
-function fetchCommunity(communityid, username) {
+function fetchEvent(communityid, eventid) {
 
     var setCommunity = function(data) {
         window.community = data;

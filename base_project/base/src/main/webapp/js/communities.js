@@ -9,7 +9,8 @@ function leaveCommunity(event) {
     console.log("Leaving community " + event.data.communityid);
     var callback = function(data) {console.log(data);};
     deleteResourceWithUsername("/rest/communities/" + event.data.communityid + "/membership", event.data.username, callback);
-    fetchUserCommunities(event.data.username);
+    setTimeout(function(){ fetchUserCommunities(event.data.username); }, 500);
+
 }
 
 function fetchUserCommunities(userId) {
@@ -39,7 +40,7 @@ function fetchUserCommunities(userId) {
 function userInfoCallback(data) {
     if (data) {
 
-        $( "#user-info" ).append("User Name: " + data.userName);
+        //$( "#user-info" ).append("User Name: " + data.userName);
         $( "#user-dropdown-title" ).html(data.emailAddress);
 
         $.getJSON("/rest/user/logouturl").done(

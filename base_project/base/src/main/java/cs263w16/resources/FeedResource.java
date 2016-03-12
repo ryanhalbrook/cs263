@@ -10,6 +10,7 @@ import cs263w16.datasources.CommunitiesDataSource;
 import cs263w16.datasources.DefaultCommunitiesDataSource;
 import cs263w16.datasources.DefaultUsersDataSource;
 import cs263w16.datasources.UsersDataSource;
+import cs263w16.model.AppUser;
 import cs263w16.model.Event;
 
 import java.util.ArrayList;
@@ -34,8 +35,11 @@ public class FeedResource {
         String userId = headers.getRequestHeader("username").get(0);
 
         List<Event> events = new ArrayList<>();
+        AppUser appUser = usersDataSource.getUser(userId);
 
-        for (String community : usersDataSource.getUser(userId).getMemberships()) {
+        if (appUser == null) return null;
+
+        for (String community : appUser.getMemberships()) {
             events.addAll(communitiesDataSource.eventsForCommunity(community));
         }
 

@@ -1,6 +1,7 @@
 package cs263w16.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 /**
@@ -74,7 +75,12 @@ public class AppUser {
     }
     public void setSignupDate(Date date) { this.signupDate = signupDate; }
 
-    public List<String>getMemberships() { return memberships; }
+    public List<String>getMemberships() {
+        if (memberships == null) {
+            memberships = new ArrayList<String>();
+        }
+        return memberships;
+    }
     public void setMemberships(List<String> memberships) { this.memberships = memberships; }
 
 }

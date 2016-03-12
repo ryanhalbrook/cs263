@@ -35,23 +35,27 @@ $( document ).ready(function() {
 
             if (data) {
 
-                $( "#user-info" ).append("User Name: " + data.userName);
+                //$( "#user-info" ).append("User Name: " + data.userName);
                 $( "#user-dropdown-title" ).html(data.emailAddress);
 
                 $.getJSON("../rest/user/logouturl").done(
                     function (data) {
                         $( "#logouturl" ).html("<a href=\"" + data.string + "\">Logout</a>");
+                        $("#user-dropdown").css("visibility", "visible");
                     }
                 );
 
-                fetchUserFeed(data.userName);
+                $("#upcoming-events").css("visibility", "visible");
+
+                fetchUserFeed(data.userId);
 
             } else {
 
-                //$( "#user-dropdown" ).remove();
                 $.getJSON("../rest/user/loginurl").done(
                     function (data) {
-                        $( "#user-info" ).html("Please <a href=\"" + data.string + "\">Sign in</a> with Google.");
+                        $( "#user-info" ).html("Please <a href=\"" + data.string + "\">Sign In</a> with Google.");
+                        $("#user-login").css("visibility", "visible");
+                        $("#loginurl").html("<a href=\"" + data.string + "\">Sign In</a>");
                     }
                 );
 
