@@ -2,9 +2,11 @@ package cs263w16.datasources;
 
 import com.google.appengine.api.datastore.*;
 import cs263w16.model.AppUser;
+import cs263w16.model.Event;
 import cs263w16.resources.CommunityResource;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -38,5 +40,18 @@ public class DefaultMembershipsDataSource implements MembershipsDataSource {
         }
         List<String> memberships = appUser.getMemberships();
         return (memberships != null) ? memberships : (new ArrayList<String>());
+    }
+
+    public void addSubscription(String userId, String communityId, String eventId) throws DatastoreFailureException, ConcurrentModificationException, IllegalArgumentException {
+        String key = userId + "::" + communityId + "::" + eventId;
+        Entity entity = new Entity("Subscription", key);
+        entity.setProperty("membership", userId + "::" + communityId);
+        entity.setProperty("event", eventId);
+
+        datastore.put(entity);
+    }
+
+    public List<Event> getSubscriptions(String userId, String communityId) {
+        return null;
     }
 }

@@ -120,6 +120,7 @@ public class CommunityResource {
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
+
     @Path("events")
     public CommunityEventsResource getEventsForCommunity(@PathParam("community") String id) {
 
@@ -127,11 +128,12 @@ public class CommunityResource {
 
     }
 
+    /*
     @Path("membership")
     public MembershipResource getMemberShip(@PathParam("community") String id) {
 
         return new MembershipResource(uriInfo, request, id);
 
     }
-
+    */
 }

@@ -84,6 +84,8 @@ public class CommunityEventsResource {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
+        // TODO: Check if event already exists.
+
         try {
             Event event = new Event(name, description, communityName, false);
             DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
@@ -91,9 +93,18 @@ public class CommunityEventsResource {
             event.setEventDate(dt.toDate());
             eventsDataSource.putEvent(event);
         } catch (Exception e) {
+            e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         return Response.status(Response.Status.CREATED).build();
     }
+
+    @Path("{event}")
+    public EventResource getEvent(@PathParam("event") String id) {
+
+        return new EventResource(uriInfo, request, id);
+
+    }
+
 
 }

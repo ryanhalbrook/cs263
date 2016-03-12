@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.*;
 import cs263w16.model.Event;
 
 import java.util.ConcurrentModificationException;
+import java.util.Date;
 
 /**
  * Created by ryanhalbrook on 2/28/16.
@@ -28,15 +29,32 @@ public class DefaultEventsDataSource implements EventsDataSource {
 
 
 
-    public void deleteEvent(String eventName) {
-        // TODO stub
+    public void deleteEvent(String eventId) throws DatastoreFailureException, ConcurrentModificationException, IllegalArgumentException{
+        if (eventId == null || eventId.equals("")) {
+            return;
+        }
+        Key key = KeyFactory.createKey("Event", eventId);
+        datastore.delete(key);
+
     }
 
 
 
-    public Event getEvent(String eventName) {
-        // TODO stub
-        return null;
+    public Event getEvent(String eventId) throws EntityNotFoundException {
+        if (eventId == null || eventId.equals("")) {
+            return null;
+        }
+        Event event;
+        Entity entity = datastore.get(KeyFactory.createKey("Event", eventId));
+        event = new Event(  eventId,
+                (String)entity.getProperty("description"),
+                (String)entity.getProperty("communityName"),
+                (Boolean)entity.getProperty("publiclyAvailable"));
+
+        event.setEventDate((Date)entity.getProperty("eventDate"));
+
+
+        return event;
     }
 
 

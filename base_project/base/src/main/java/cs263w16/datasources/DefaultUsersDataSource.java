@@ -79,7 +79,7 @@ public class DefaultUsersDataSource implements UsersDataSource {
 
                 List<String> memberships = (List<String>) entity.getProperty("memberships");
                 if (memberships == null) {
-                    memberships = new ArrayList<String>();
+                    memberships = new ArrayList<>();
                 }
                 if (memberships.contains(community)) {
                     log.info("Attempt made to re-add membership");

@@ -1,5 +1,9 @@
 package cs263w16.datasources;
 
+import com.google.appengine.api.datastore.DatastoreFailureException;
+import cs263w16.model.Event;
+
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 /**
@@ -10,16 +14,21 @@ public interface MembershipsDataSource {
     /**
      * Add a community membership to the specified user.
      * @param userId
-     * @param community
+     * @param communityId
      */
-    public void addMembership(String userId, String community);
+    public void addMembership(String userId, String communityId);
 
     /**
-     * Add a community membership from the specified user.
+     * Remove the community membership from the specified user.
      * @param userId
      * @param community
      */
     public void removeMembership(String userId, String community);
+
+
+    public void addSubscription(String userId, String communityId, String eventId) throws DatastoreFailureException, ConcurrentModificationException, IllegalArgumentException;
+
+    public List<Event> getSubscriptions(String userId, String communityId);
 
     /**
      * Get all memberships from the specified user.
