@@ -3,6 +3,8 @@ package cs263w16.datasources;
 import com.google.appengine.api.datastore.*;
 import cs263w16.model.Event;
 
+import java.util.ConcurrentModificationException;
+
 /**
  * Created by ryanhalbrook on 2/28/16.
  */
@@ -14,8 +16,7 @@ public class DefaultEventsDataSource implements EventsDataSource {
         this.datastore = DatastoreServiceFactory.getDatastoreService();
     }
 
-    public void putEvent(Event event)
-    {
+    public void putEvent(Event event) throws DatastoreFailureException, ConcurrentModificationException, IllegalArgumentException {
         Entity entity = new Entity("Event", event.getName());
         entity.setProperty("description", event.getDescription());
         entity.setProperty("communityName", event.getCommunityName());

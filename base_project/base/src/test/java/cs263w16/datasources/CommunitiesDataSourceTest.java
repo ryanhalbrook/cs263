@@ -33,14 +33,14 @@ public class CommunitiesDataSourceTest {
     @Test
     public void testAddCommunity1() {
         Date date = new Date();
-        Community community = new Community("id", "description", date);
+        Community community = new Community("id", "description", date, "userid");
         communitiesDataSource.addCommunity(community);
     }
 
     @Test
     public void testAddCommunity2() {
         Date date = new Date();
-        Community community = new Community("", "description", date);
+        Community community = new Community("", "description", date, "userid");
         communitiesDataSource.addCommunity(community);
     }
 
@@ -61,7 +61,7 @@ public class CommunitiesDataSourceTest {
     @Test
     public void testGetCommunity3() {
         Date date = new Date();
-        Community community1 = new Community("id", "description", date);
+        Community community1 = new Community("id", "description", date, "userid");
         communitiesDataSource.addCommunity(community1);
         Community community2 = communitiesDataSource.getCommunity("id");
         assertNotNull(community2);
@@ -70,7 +70,7 @@ public class CommunitiesDataSourceTest {
     @Test
     public void testGetCommunity4() {
         Date date = new Date();
-        Community community1 = new Community("id", "description", date);
+        Community community1 = new Community("id", "description", date, "userid");
         communitiesDataSource.addCommunity(community1);
         Community community2 = communitiesDataSource.getCommunity("abc");
         assertNull(community2);

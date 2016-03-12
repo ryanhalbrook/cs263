@@ -14,6 +14,7 @@ import cs263w16.datasources.CommunitiesDataSource;
 import cs263w16.datasources.DefaultCommunitiesDataSource;
 import cs263w16.datasources.DefaultEventsDataSource;
 import cs263w16.datasources.EventsDataSource;
+import cs263w16.model.Community;
 import cs263w16.model.Event;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -44,26 +45,55 @@ public class CommunityEventsResource {
 
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public List<Event> getEvents()
+    public Response getEvents()
     {
-        UserService userService = UserServiceFactory.getUserService();
-        User user = userService.getCurrentUser();  // Find out who the user is.
-        return communitiesDataSource.eventsForCommunity(communityName);
+        // check - community exists.
+        Community community = communitiesDataSource.getCommunity(communityName);
+        if (community == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Community not found for community id: " + communityName).build();
+        }
+
+        return Response.ok().entity(communitiesDataSource.eventsForCommunity(communityName)).build();
     }
 
     @POST
-    @Produces(MediaType.TEXT_HTML)
+    //@Produces(MediaType.TEXT_HTML)
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public void newEvent(@FormParam("name") String name,
+    public Response newEvent(@FormParam("name") String name,
                              @FormParam("description") String description,
                              @FormParam("date") String date,
-                             @Context HttpServletResponse servletResponse) throws IOException
+                             @Context HttpHeaders headers) throws IOException
     {
-        Event event = new Event(name, description, communityName, false);
-        DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
-        DateTime dt = fmt.parseDateTime(date);
-        event.setEventDate(dt.toDate());
-        eventsDataSource.putEvent(event);
+        String userId;
+
+        if (headers.getRequestHeader("userid") != null) {
+            userId = headers.getRequestHeader("userid").get(0);
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        // check - community exists.
+        Community community = communitiesDataSource.getCommunity(communityName);
+        if (community == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Community not found for community id: " + communityName).build();
+        }
+
+        // check - user is the community admin.
+        if (!userId.equals(community.getAdminUserId())) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        try {
+            Event event = new Event(name, description, communityName, false);
+            DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+            DateTime dt = fmt.parseDateTime(date);
+            event.setEventDate(dt.toDate());
+            eventsDataSource.putEvent(event);
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+        return Response.status(Response.Status.CREATED).build();
     }
 
 }

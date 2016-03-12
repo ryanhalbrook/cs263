@@ -1,14 +1,13 @@
 package cs263w16.datasources;
 
 import com.google.appengine.api.datastore.*;
+import com.google.appengine.repackaged.com.google.api.client.util.Data;
+import com.google.appengine.repackaged.com.google.datastore.v1beta3.client.DatastoreException;
 import cs263w16.model.Community;
 import cs263w16.model.Event;
 import cs263w16.resources.CommunityResource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -37,6 +36,25 @@ public class DefaultCommunitiesDataSource implements CommunitiesDataSource {
         Entity entity = new Entity("Community", community.getId());
         entity.setProperty("description", community.getDescription());
         entity.setProperty("creationDate", community.getCreationDate());
+        entity.setProperty("adminid", community.getAdminUserId());
+
+        try {
+            datastore.put(entity);
+        } catch (Exception e) {
+            log.warning("Exception thrown attempting to add a new community");
+        }
+
+    }
+
+    public void updateCommunity(Community community) {
+        if (community == null || community.getId() == null || community.getId().equals("")) {
+            return;
+        }
+
+        Entity entity = new Entity("Community", community.getId());
+        entity.setProperty("description", community.getDescription());
+        entity.setProperty("creationDate", community.getCreationDate());
+        entity.setProperty("adminid", community.getAdminUserId());
 
         try {
             datastore.put(entity);
@@ -53,7 +71,11 @@ public class DefaultCommunitiesDataSource implements CommunitiesDataSource {
         Community community;
         try {
             Entity entity = datastore.get(KeyFactory.createKey("Community", communityName));
-            community = new Community(communityName, (String)entity.getProperty("description"), (Date)entity.getProperty("creationDate"));
+            community = new Community(  communityName,
+                                        (String)entity.getProperty("description"),
+                                        (Date)entity.getProperty("creationDate"),
+                                        (String)entity.getProperty("adminid"));
+
         } catch (EntityNotFoundException e) {
             community = null;
             log.info("Could not find a community that was requested");
@@ -93,7 +115,8 @@ public class DefaultCommunitiesDataSource implements CommunitiesDataSource {
             Community c = new Community(
                     e.getKey().getName(),
                     (String)e.getProperty("description"),
-                    (Date)e.getProperty("creationDate"));
+                    (Date)e.getProperty("creationDate"),
+                    (String)e.getProperty("adminid"));
 
             matchingCommunities.add(c);
         }
@@ -111,7 +134,7 @@ public class DefaultCommunitiesDataSource implements CommunitiesDataSource {
 
         List<Entity> entities = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 
-        if (entities == null) return new ArrayList<Event>();
+        if (entities == null) return new ArrayList<>();
 
         List<Event> events = new ArrayList<>();
         for (Entity entity : entities) {
@@ -126,6 +149,15 @@ public class DefaultCommunitiesDataSource implements CommunitiesDataSource {
         }
 
         return events;
+    }
+
+    public void deleteCommunity(String communityId) throws DatastoreFailureException, ConcurrentModificationException, IllegalArgumentException{
+        if (communityId == null || communityId.equals("")) {
+            return;
+        }
+        Key key = KeyFactory.createKey("Community", communityId);
+        datastore.delete(key);
+
     }
 
 }

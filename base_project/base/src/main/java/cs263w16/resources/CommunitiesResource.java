@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -26,14 +27,29 @@ public class CommunitiesResource {
     @POST
     @Produces(MediaType.TEXT_HTML)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public void newCommunity(@FormParam("communityid") String communityId,
-                        @FormParam("description") String description,
-                        @Context HttpServletResponse servletResponse) throws IOException {
+    public Response newCommunity(@FormParam("communityid") String communityId,
+                             @FormParam("description") String description,
+                             @Context HttpServletResponse servletResponse,
+                             @Context HttpHeaders headers) throws IOException {
 
-        Community community = new Community(communityId, description, new Date());
+        String userId;
+
+        if (headers.getRequestHeader("userid") != null) {
+            userId = headers.getRequestHeader("userid").get(0);
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        Community community;
+
+        community = communitiesDataSource.getCommunity(communityId);
+        if (community != null) {
+            return Response.status(Response.Status.CONFLICT).entity("Community already exists with community id: " + communityId).build();
+        }
+
+        community = new Community(communityId, description, new Date(), userId);
         communitiesDataSource.addCommunity(community);
-        servletResponse.sendRedirect("/html/communities.html");
-
+        return Response.temporaryRedirect(URI.create("/html/communities.html")).build();
     }
 
     @Path("{community}")

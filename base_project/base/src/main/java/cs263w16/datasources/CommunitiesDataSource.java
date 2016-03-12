@@ -1,8 +1,11 @@
 package cs263w16.datasources;
 
+import com.google.appengine.api.datastore.DatastoreFailureException;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import cs263w16.model.Community;
 import cs263w16.model.Event;
 
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 /**
@@ -22,6 +25,18 @@ public interface CommunitiesDataSource {
      * @param community
      */
     public void addCommunity(Community community);
+
+    /**
+     * Update the data entry for a community.
+     * @param community
+     */
+    public void updateCommunity(Community community);
+
+    /**
+     * Delete a community.
+     * @param communityId
+     */
+    public void deleteCommunity(String communityId) throws DatastoreFailureException, ConcurrentModificationException, IllegalArgumentException;
 
     /**
      * Get all events for the specified community.

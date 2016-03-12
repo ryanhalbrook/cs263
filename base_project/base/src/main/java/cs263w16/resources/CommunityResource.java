@@ -4,8 +4,12 @@ import cs263w16.datasources.CommunitiesDataSource;
 import cs263w16.datasources.DefaultCommunitiesDataSource;
 import cs263w16.model.Community;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Date;
 import java.util.logging.Logger;
 
 /**
@@ -33,41 +37,87 @@ public class CommunityResource {
 
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Community getCommunity() {
+    public Response getCommunity() {
 
         Community community = communitiesDataSource.getCommunity(this.communityName);
         if (community == null) {
-            throw new RuntimeException("Get: Community with " + communityName +  " not found");
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        return community;
+        return Response.ok().entity(community).build();
 
     }
 
+    @POST
+    @Produces(MediaType.TEXT_HTML)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response putCommunity(@FormParam("communityid") String communityId,
+                                 @FormParam("description") String description,
+                                 @Context HttpServletResponse servletResponse,
+                                 @Context HttpHeaders headers) throws IOException {
 
-    /* TODO: modifying an existing community */
-    @PUT
-    @Consumes(MediaType.APPLICATION_XML)
-    public Response putCommunity(String description) {
+        String userId;
 
-        Response res = null;
-
-        Community result = communitiesDataSource.getCommunity(this.communityName);
-
-        //first check if the Entity exists in the datastore
-        if (result == null) {
-            throw new RuntimeException("Cannot modify a community that does not exist");
+        if (headers.getRequestHeader("userid") != null) {
+            userId = headers.getRequestHeader("userid").get(0);
         } else {
-            //update the entity
-            result.setDescription(description);
-            communitiesDataSource.addCommunity(result);
-
-            //signal that we updated the entity
-            res = Response.noContent().build();
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        return res;
+        Community community;
 
+        community = communitiesDataSource.getCommunity(communityId);
+        if (community == null) {
+            // create a new community.
+
+            community = new Community(communityId, description, new Date(), userId);
+            communitiesDataSource.addCommunity(community);
+
+
+        } else {
+            // modify existing community's attributes.
+            if (description != null)
+                community.setDescription(description);
+
+            communitiesDataSource.updateCommunity(community);
+
+        }
+
+        return Response.temporaryRedirect(URI.create("/html/communities.html")).build();
+
+    }
+
+    @DELETE
+    @Produces(MediaType.TEXT_HTML)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response deleteCommunity(@FormParam("communityid") String communityId, @Context HttpHeaders headers) {
+
+
+        String userId;
+
+        if (headers.getRequestHeader("userid") != null) {
+            userId = headers.getRequestHeader("userid").get(0);
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        Community community = communitiesDataSource.getCommunity(communityId);
+        if (community == null) {
+            return Response.status(Response.Status.EXPECTATION_FAILED).build();
+        }
+
+        // check - user is the community admin.
+        if (!userId.equals(community.getAdminUserId())) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        try {
+            communitiesDataSource.deleteCommunity(communityId);
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     @Path("events")
