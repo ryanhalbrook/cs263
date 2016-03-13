@@ -2,6 +2,7 @@ package cs263w16.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by ryanhalbrook on 2/8/16.
@@ -40,14 +41,8 @@ public class Event {
     public String getCommunityName() {
         return communityName;
     }
-    public void setCommunityName(String communityName) {
-        this.communityName = communityName;
-    }
     public boolean isPubliclyAvailable() {
         return publiclyAvailable;
-    }
-    public void setPubliclyAvailable(boolean publiclyAvailable) {
-        this.publiclyAvailable = publiclyAvailable;
     }
     public Date getEventDate() {return eventDate;}
     public void setEventDate(Date eventDate) {this.eventDate = eventDate;}

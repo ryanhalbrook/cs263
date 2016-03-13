@@ -3,6 +3,7 @@ package cs263w16.datasources;
 import com.google.appengine.api.datastore.DatastoreFailureException;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import cs263w16.model.Announcement;
+import cs263w16.model.Event;
 import cs263w16.model.Membership;
 import cs263w16.model.Subscription;
 
@@ -33,6 +34,10 @@ public interface MembershipsDataSource {
      * @param userId
      */
     List<Membership> getMemberships(String userId);
+
+    List<Event> getMembershipEventsForUser(String userId);
+
+    void hideMembershipEvent(String userId, String eventId) throws EntityNotFoundException;
 
     /**
      * Subscribe the user to the event.

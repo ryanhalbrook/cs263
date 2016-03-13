@@ -1,15 +1,11 @@
 package cs263w16.resources;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
-import cs263w16.datasources.CommunitiesDataSource;
-import cs263w16.datasources.DefaultCommunitiesDataSource;
-import cs263w16.datasources.DefaultUsersDataSource;
-import cs263w16.datasources.UsersDataSource;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import cs263w16.datasources.*;
 import cs263w16.model.AppUser;
 import cs263w16.model.Event;
 
@@ -24,25 +20,45 @@ public class FeedResource {
     @Context UriInfo uriInfo;
     @Context Request request;
 
-    public static UsersDataSource usersDataSource = new DefaultUsersDataSource();
-    public static CommunitiesDataSource communitiesDataSource = new DefaultCommunitiesDataSource();
+    public MembershipsDataSource membershipsDataSource = new DefaultMembershipsDataSource();
 
+
+    @DELETE
+    @Consumes({MediaType.APPLICATION_FORM_URLENCODED})
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response deleteEvent(@FormParam("eventId") String eventId, @Context HttpHeaders headers) {
+        if (headers.getRequestHeader("userid") == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        String userId = headers.getRequestHeader("userid").get(0);
+        if (userId == null || userId.equals("")) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        try {
+            membershipsDataSource.hideMembershipEvent(userId, eventId);
+        } catch (EntityNotFoundException e) {
+            return Response.status(Response.Status.EXPECTATION_FAILED).build();
+        }
+        return Response.ok().build();
+
+    }
 
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public List<Event> getEvents(@Context HttpServletResponse servletResponse,
+    public Response getEvents(@Context HttpServletResponse servletResponse,
                                  @Context HttpHeaders headers) {
-        String userId = headers.getRequestHeader("username").get(0);
 
-        List<Event> events = new ArrayList<>();
-        /*AppUser appUser = usersDataSource.getUser(userId);
+        if (headers.getRequestHeader("userid") == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
 
-        if (appUser == null) return null;
+        String userId = headers.getRequestHeader("userid").get(0);
+        if (userId == null || userId.equals("")) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
 
-        for (String community : appUser.getMemberships()) {
-            events.addAll(communitiesDataSource.eventsForCommunity(community));
-        }*/
-
-        return events;
+        return Response.ok().entity(membershipsDataSource.getMembershipEventsForUser(userId)).build();
     }
 }

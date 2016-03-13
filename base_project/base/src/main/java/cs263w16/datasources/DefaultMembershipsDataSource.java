@@ -3,11 +3,7 @@ package cs263w16.datasources;
 import com.google.appengine.api.datastore.*;
 import cs263w16.model.*;
 import cs263w16.resources.CommunityResource;
-
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -19,7 +15,7 @@ public class DefaultMembershipsDataSource implements MembershipsDataSource {
 
     private static final Logger log = Logger.getLogger(CommunityResource.class.getName());
 
-    private static UsersDataSource usersDataSource = new DefaultUsersDataSource();
+    private UsersDataSource usersDataSource = new DefaultUsersDataSource();
     public DefaultMembershipsDataSource() {
         this.datastore = DatastoreServiceFactory.getDatastoreService();
     }
@@ -135,6 +131,15 @@ public class DefaultMembershipsDataSource implements MembershipsDataSource {
             userIds.add((String)entity.getProperty("userid"));
         }
 
+        Date date = null;
+
+        try {
+            Entity entity = datastore.get(KeyFactory.createKey("Event", eventId));
+            date = (Date)entity.getProperty("eventDate");
+        } catch (EntityNotFoundException e) {
+
+        }
+
         System.out.println("Found " + userIds.size() + " user ids");
 
         for (String userId : userIds) {
@@ -142,11 +147,60 @@ public class DefaultMembershipsDataSource implements MembershipsDataSource {
             membershipEvent.setProperty("hidden", Boolean.valueOf(false));
             membershipEvent.setProperty("eventid", eventId);
             membershipEvent.setProperty("userid", userId);
+            membershipEvent.setProperty("eventDate", date);
             datastore.put(membershipEvent);
         }
 
         // TODO: We added them all, now grab the event entity and update the propagated flag.
 
+    }
+
+    public List<Event> getMembershipEventsForUser(String userId) {
+
+        Query.Filter userIdfilter =
+                new Query.FilterPredicate("userid", Query.FilterOperator.EQUAL, userId);
+
+        Query q = new Query("MembershipEvent").setFilter(userIdfilter).addSort("eventDate", Query.SortDirection.ASCENDING);
+
+        List<Entity> entities = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+        List<String> eventIds = new ArrayList<>();
+
+        for (Entity entity : entities) {
+            Boolean hidden = (Boolean)entity.getProperty("hidden");
+            if (hidden.equals(Boolean.valueOf(false))) {
+                eventIds.add((String) entity.getProperty("eventid"));
+            }
+        }
+
+        List<Event> events = new ArrayList<>();
+
+        for (String eventId : eventIds) {
+            Entity entity;
+            try {
+                entity = datastore.get(KeyFactory.createKey("Event", eventId));
+                Event event = new Event(  eventId,
+                        (String)entity.getProperty("description"),
+                        (String)entity.getProperty("communityName"),
+                        (Boolean)entity.getProperty("publiclyAvailable"));
+
+                event.setEventDate((Date)entity.getProperty("eventDate"));
+
+                events.add(event);
+            } catch (EntityNotFoundException e) {
+                // Oh well, live and log
+                log.info("Thought there was a MembershipEvent, but it dissappeared...");
+            }
+        }
+
+        return events;
+
+    }
+
+    public void hideMembershipEvent(String userId, String eventId) throws EntityNotFoundException {
+        Entity entity;
+        entity = datastore.get(KeyFactory.createKey("MembershipEvent", userId + ":" + eventId));
+        entity.setProperty("hidden", Boolean.valueOf(true));
+        datastore.put(entity);
     }
 
     public void addAnnouncement(Announcement announcement) throws DatastoreFailureException, ConcurrentModificationException, IllegalArgumentException {
@@ -198,7 +252,5 @@ public class DefaultMembershipsDataSource implements MembershipsDataSource {
 
             datastore.put(subscriptionAnnouncement);
         }
-
-
     }
 }

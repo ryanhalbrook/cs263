@@ -127,13 +127,4 @@ public class CommunityResource {
         return new CommunityEventsResource(uriInfo, request, id);
 
     }
-
-    /*
-    @Path("membership")
-    public MembershipsResource getMemberShip(@PathParam("community") String id) {
-
-        return new MembershipsResource(uriInfo, request, id);
-
-    }
-    */
 }
