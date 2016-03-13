@@ -34,10 +34,8 @@ public class DefaultUsersDataSource implements UsersDataSource {
             String firstName = (String)entity.getProperty("firstName");
             String lastName = (String)entity.getProperty("lastName");
             Date date = (Date)entity.getProperty("date");
-            ArrayList<String> memberships = (ArrayList<String>)entity.getProperty("memberships");
 
             user = new AppUser(userId, emailAddress, userName, firstName, lastName, date);
-            user.setMemberships(memberships);
 
 
         } catch (EntityNotFoundException e) {
@@ -59,7 +57,6 @@ public class DefaultUsersDataSource implements UsersDataSource {
         userEntity.setProperty("firstName", appUser.getFirstName());
         userEntity.setProperty("lastName", appUser.getLastName());
         userEntity.setProperty("date", appUser.getSignupDate());
-        userEntity.setProperty("memberships", appUser.getMemberships());
 
         try {
             datastore.put(userEntity);
@@ -69,35 +66,5 @@ public class DefaultUsersDataSource implements UsersDataSource {
 
     }
 
-    public void addMembership(String userId, String communityId) {
-
-        Transaction txn = datastore.beginTransaction();
-        try {
-            try {
-
-                Entity membership = new Entity("Membership", userId + ":" + communityId);
-                membership.setProperty("userid", userId);
-                membership.setProperty("communityid", communityId);
-                try {
-                    datastore.put(membership);
-                    txn.commit();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    log.warning("Failed to add membership");
-                }
-
-            } catch (Exception e) {
-                log.warning("AppUser not found, failed to add membership");
-            }
-        } finally {
-            if (txn.isActive()) {
-                txn.rollback();
-            }
-        }
-    }
-
-    public void removeMembership(String userId, String communityId) {
-        datastore.delete(KeyFactory.createKey("Membership", userId + ":" + communityId));
-    }
 
 }

@@ -81,4 +81,12 @@ public class EventResource {
 
         return Response.status(Response.Status.NO_CONTENT).build();
     }
+
+    @Path("announcements")
+    public AnnouncementsResource getAnnouncementsResource() {
+
+        return new AnnouncementsResource(uriInfo, request, eventId);
+
+    }
+
 }

@@ -35,13 +35,13 @@ public class FeedResource {
         String userId = headers.getRequestHeader("username").get(0);
 
         List<Event> events = new ArrayList<>();
-        AppUser appUser = usersDataSource.getUser(userId);
+        /*AppUser appUser = usersDataSource.getUser(userId);
 
         if (appUser == null) return null;
 
         for (String community : appUser.getMemberships()) {
             events.addAll(communitiesDataSource.eventsForCommunity(community));
-        }
+        }*/
 
         return events;
     }

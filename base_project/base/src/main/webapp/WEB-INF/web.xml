@@ -9,6 +9,7 @@
         <servlet-name>newuserworker</servlet-name>
         <url-pattern>/tasks/newuserworker</url-pattern>
     </servlet-mapping>
+
     <servlet>
         <servlet-name>propagateeventworker</servlet-name>
         <servlet-class>cs263w16.PropagateEventWorkerServlet</servlet-class>
@@ -17,6 +18,16 @@
         <servlet-name>propagateeventworker</servlet-name>
         <url-pattern>/tasks/propagateeventworker</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>propagateannouncementworker</servlet-name>
+        <servlet-class>cs263w16.PropagateAnnouncementWorkerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>propagateannouncementworker</servlet-name>
+        <url-pattern>/tasks/propagateannouncementworker</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>mainpage</servlet-name>
         <servlet-class>cs263w16.MainPageServlet</servlet-class>

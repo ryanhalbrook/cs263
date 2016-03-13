@@ -1,7 +1,9 @@
 package cs263w16.datasources;
 
 import com.google.appengine.api.datastore.DatastoreFailureException;
-import cs263w16.model.Event;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import cs263w16.model.Announcement;
+import cs263w16.model.Membership;
 import cs263w16.model.Subscription;
 
 import java.util.ConcurrentModificationException;
@@ -26,16 +28,43 @@ public interface MembershipsDataSource {
      */
     void removeMembership(String userId, String community);
 
-
-    void addSubscription(String userId, String communityId, String eventId) throws DatastoreFailureException, ConcurrentModificationException, IllegalArgumentException;
-
-    List<Subscription> getSubscriptions(String userId, String communityId);
-
     /**
-     * Get all memberships from the specified user.
+     * Get all memberships belonging to the specified user.
      * @param userId
      */
-    List<String> getMemberships(String userId);
+    List<Membership> getMemberships(String userId);
 
+    /**
+     * Subscribe the user to the event.
+     * @param userId
+     * @param communityId
+     * @param eventId
+     * @throws DatastoreFailureException
+     * @throws ConcurrentModificationException
+     * @throws IllegalArgumentException
+     */
+    void addSubscription(String userId, String communityId, String eventId)
+            throws DatastoreFailureException, ConcurrentModificationException, IllegalArgumentException;
+
+    /**
+     * Get a list of subscriptions for the specified user.
+     * @param userId
+     * @param communityId
+     * @return
+     */
+    List<Subscription> getSubscriptions(String userId, String communityId);
+
+    void addAnnouncement(Announcement announcement)
+            throws DatastoreFailureException, ConcurrentModificationException, IllegalArgumentException;
+
+    Announcement getAnnouncement(String announcementId) throws EntityNotFoundException;
+
+    void propagateAnnouncement(Announcement announcement);
+
+    /**
+     * Create a reference to the event for every member of the community.
+     * @param eventId
+     * @param communityId
+     */
     void propagateEvent(String eventId, String communityId);
 }

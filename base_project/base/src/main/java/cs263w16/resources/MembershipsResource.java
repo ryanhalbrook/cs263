@@ -45,12 +45,12 @@ public class MembershipsResource {
         if (userId == null) return null;
 
         List<Community> communities = new ArrayList<>();
-        List<String> memberships = membershipsDataSource.getMemberships(userId);
+        List<Membership> memberships = membershipsDataSource.getMemberships(userId);
         if (memberships == null) {
             System.out.println("Memberships is null");
         } else {
-            for (String membership : membershipsDataSource.getMemberships(userId)) {
-                Community c = communitiesDataSource.getCommunity(membership);
+            for (Membership membership : membershipsDataSource.getMemberships(userId)) {
+                Community c = communitiesDataSource.getCommunity(membership.getCommunityId());
                 if (c != null) communities.add(c);
             }
         }

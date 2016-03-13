@@ -21,7 +21,6 @@ public class AppUser {
     private String firstName;
     private String lastName;
     private Date signupDate;
-    private List<String> memberships;
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -74,13 +73,5 @@ public class AppUser {
         return signupDate;
     }
     public void setSignupDate(Date date) { this.signupDate = signupDate; }
-
-    public List<String>getMemberships() {
-        if (memberships == null) {
-            memberships = new ArrayList<String>();
-        }
-        return memberships;
-    }
-    public void setMemberships(List<String> memberships) { this.memberships = memberships; }
 
 }

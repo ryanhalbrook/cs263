@@ -13,4 +13,16 @@ public class Subscription {
         this.communityId = communityId;
         this.eventId = eventId;
     }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getCommunityId() {
+        return communityId;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
 }

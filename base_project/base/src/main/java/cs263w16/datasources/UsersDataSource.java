@@ -20,18 +20,5 @@ public interface UsersDataSource {
      */
     void addUser(AppUser appUser);
 
-    /**
-     * Add a community membership to the data entry for the specified user.
-     * @param userId
-     * @param community
-     */
-    void addMembership(String userId, String community);
-
-    /**
-     * Remove a community membership to the data entry for the specified user.
-     * @param userId
-     * @param community
-     */
-    void removeMembership(String userId, String community);
 
 }

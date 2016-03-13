@@ -2,6 +2,7 @@ package cs263w16.datasources;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import cs263w16.model.Membership;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +43,7 @@ public class MembershipsDataSourceTest {
 
     @Test
     public void testGetMemberships1() {
-        List<String> memberships = membershipsDataSource.getMemberships("uid");
+        List<Membership> memberships = membershipsDataSource.getMemberships("uid");
 
         assertNull("memberships should be null", memberships); // because the user uid does not exist.
     }

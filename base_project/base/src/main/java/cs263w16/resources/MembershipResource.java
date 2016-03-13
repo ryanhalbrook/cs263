@@ -50,6 +50,7 @@ public class MembershipResource {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     public Response putMembership(@Context HttpHeaders headers) {
+
         String userId;
 
         if (headers.getRequestHeader("userid") != null) {
@@ -58,7 +59,7 @@ public class MembershipResource {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
         membershipsDataSource.addMembership(userId, communityId);
-        return Response.noContent().build();
+        return Response.status(Response.Status.CREATED).build();
 
 
     }

@@ -91,10 +91,12 @@ public class CommunityEventsResource {
         // TODO: Check if event already exists.
 
         try {
+
             if (date == null) {
-                System.out.println("Seriously");
+                System.out.println("Date is null");
             }
-            Event event = new Event(name, description, communityName, false);
+
+            Event event = new Event(name, description, communityName, true);
             DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
             DateTime dt = fmt.parseDateTime(date);
             event.setEventDate(dt.toDate());
