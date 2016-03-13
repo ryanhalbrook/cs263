@@ -12,7 +12,7 @@ import java.util.List;
  * Created by ryanhalbrook on 2/28/16.
  */
 public interface EventsDataSource {
-    public void putEvent(Event event);
-    public void deleteEvent(String eventName) throws DatastoreFailureException, ConcurrentModificationException, IllegalArgumentException;
-    public Event getEvent(String eventName) throws EntityNotFoundException;
+    void putEvent(Event event);
+    void deleteEvent(String eventName) throws DatastoreFailureException, ConcurrentModificationException, IllegalArgumentException;
+    Event getEvent(String eventName) throws EntityNotFoundException;
 }

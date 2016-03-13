@@ -69,32 +69,24 @@ public class DefaultUsersDataSource implements UsersDataSource {
 
     }
 
-    public void addMembership(String userId, String community) {
+    public void addMembership(String userId, String communityId) {
 
         Transaction txn = datastore.beginTransaction();
         try {
             try {
-                Key userKey = KeyFactory.createKey("AppUser", userId);
-                Entity entity = datastore.get(userKey);
 
-                List<String> memberships = (List<String>) entity.getProperty("memberships");
-                if (memberships == null) {
-                    memberships = new ArrayList<>();
-                }
-                if (memberships.contains(community)) {
-                    log.info("Attempt made to re-add membership");
-                } else {
-                    memberships.add(community);
-                    entity.setProperty("memberships", memberships);
-                    try {
-                        datastore.put(entity);
-                        txn.commit();
-                    } catch (Exception e) {
-                        log.warning("Failed to update AppUser with new membership");
-                    }
+                Entity membership = new Entity("Membership", userId + ":" + communityId);
+                membership.setProperty("userid", userId);
+                membership.setProperty("communityid", communityId);
+                try {
+                    datastore.put(membership);
+                    txn.commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    log.warning("Failed to add membership");
                 }
 
-            } catch (EntityNotFoundException e) {
+            } catch (Exception e) {
                 log.warning("AppUser not found, failed to add membership");
             }
         } finally {
@@ -104,38 +96,8 @@ public class DefaultUsersDataSource implements UsersDataSource {
         }
     }
 
-    public void removeMembership(String userId, String community) {
-        Transaction txn = datastore.beginTransaction();
-        try {
-            try {
-                Key userKey = KeyFactory.createKey("AppUser", userId);
-                Entity entity = datastore.get(userKey);
-
-                List<String> memberships = (List<String>) entity.getProperty("memberships");
-                if (memberships == null) {
-                    memberships = new ArrayList<String>();
-                }
-                if (memberships.contains(community)) {
-                    memberships.remove(community);
-                    entity.setProperty("memberships", memberships);
-                    try {
-                        datastore.put(entity);
-                        txn.commit();
-                    } catch (Exception e) {
-                        log.warning("Failed to update AppUser with removed membership");
-                    }
-                } else {
-                    log.info("Attempt made to remove non-existing membership");
-                }
-
-            } catch (EntityNotFoundException e) {
-                log.warning("AppUser not found, failed to add membership");
-            }
-        } finally {
-            if (txn.isActive()) {
-                txn.rollback();
-            }
-        }
+    public void removeMembership(String userId, String communityId) {
+        datastore.delete(KeyFactory.createKey("Membership", userId + ":" + communityId));
     }
 
 }

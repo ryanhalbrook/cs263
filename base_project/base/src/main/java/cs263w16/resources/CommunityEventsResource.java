@@ -7,6 +7,10 @@ import javax.ws.rs.core.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
+
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -87,11 +91,20 @@ public class CommunityEventsResource {
         // TODO: Check if event already exists.
 
         try {
+            if (date == null) {
+                System.out.println("Seriously");
+            }
             Event event = new Event(name, description, communityName, false);
             DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
             DateTime dt = fmt.parseDateTime(date);
             event.setEventDate(dt.toDate());
             eventsDataSource.putEvent(event);
+
+            Queue queue = QueueFactory.getDefaultQueue();
+            queue.add(TaskOptions.Builder.withUrl("/tasks/propagateeventworker")
+                    .param("eventid", name + ":" + communityName)
+                    .param("communityid", communityName));
+
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

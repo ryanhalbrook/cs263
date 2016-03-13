@@ -18,7 +18,7 @@ public class DefaultEventsDataSource implements EventsDataSource {
     }
 
     public void putEvent(Event event) throws DatastoreFailureException, ConcurrentModificationException, IllegalArgumentException {
-        Entity entity = new Entity("Event", event.getName());
+        Entity entity = new Entity("Event", event.getName() + ":" + event.getCommunityName());
         entity.setProperty("description", event.getDescription());
         entity.setProperty("communityName", event.getCommunityName());
         entity.setProperty("publiclyAvailable", event.isPubliclyAvailable());
@@ -26,8 +26,6 @@ public class DefaultEventsDataSource implements EventsDataSource {
 
         datastore.put(entity);
     }
-
-
 
     public void deleteEvent(String eventId) throws DatastoreFailureException, ConcurrentModificationException, IllegalArgumentException{
         if (eventId == null || eventId.equals("")) {

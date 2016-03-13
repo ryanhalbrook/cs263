@@ -10,6 +10,14 @@
         <url-pattern>/tasks/newuserworker</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>propagateeventworker</servlet-name>
+        <servlet-class>cs263w16.PropagateEventWorkerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>propagateeventworker</servlet-name>
+        <url-pattern>/tasks/propagateeventworker</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>mainpage</servlet-name>
         <servlet-class>cs263w16.MainPageServlet</servlet-class>
     </servlet>

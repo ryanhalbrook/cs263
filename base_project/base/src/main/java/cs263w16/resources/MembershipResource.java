@@ -1,81 +1,66 @@
 package cs263w16.resources;
 
-import cs263w16.datasources.*;
-import cs263w16.model.*;
+import cs263w16.datasources.CommunitiesDataSource;
+import cs263w16.datasources.DefaultCommunitiesDataSource;
+import cs263w16.datasources.DefaultMembershipsDataSource;
+import cs263w16.datasources.MembershipsDataSource;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.*;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Created by ryanhalbrook on 2/18/16.
+ * Created by ryanhalbrook on 3/12/16.
  */
-@Path("/memberships")
 public class MembershipResource {
-
     @Context UriInfo uriInfo;
     @Context Request request;
 
     private static final Logger log = Logger.getLogger(CommunityResource.class.getName());
 
-    private String community;
+    private String communityId;
 
     public static MembershipsDataSource membershipsDataSource = new DefaultMembershipsDataSource();
-    public static CommunitiesDataSource communitiesDataSource = new DefaultCommunitiesDataSource();
 
-    public MembershipResource(UriInfo uriInfo, Request request, String community) {
-
+    public MembershipResource(UriInfo uriInfo, Request request, String communityId) {
         this.uriInfo = uriInfo;
         this.request = request;
-        this.community = community;
-
-    }
-
-    public MembershipResource() {}
-
-    @POST
-    @Produces(MediaType.TEXT_HTML)
-    public void newMembership(@Context HttpServletResponse servletResponse,
-                              @Context HttpHeaders headers) throws IOException {
-
-        String user = headers.getRequestHeader("username").get(0);
-        membershipsDataSource.addMembership(user, community);
-
+        this.communityId = communityId;
     }
 
     @DELETE
     @Produces(MediaType.TEXT_HTML)
-    public void deleteMembership(@Context HttpServletResponse servletResponse,
+    public Response deleteMembership(@Context HttpServletResponse servletResponse,
                                  @Context HttpHeaders headers) {
-        String user = headers.getRequestHeader("username").get(0);
-        membershipsDataSource.removeMembership(user, community);
-    }
+        String userId;
 
-    @GET
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Community> getMemberships(@Context HttpServletResponse servletResponse,
-                                          @Context HttpHeaders headers) {
-        String userId = headers.getRequestHeader("username").get(0);
-        if (userId == null) return null;
-
-        List<Community> communities = new ArrayList<>();
-        List<String> memberships = membershipsDataSource.getMemberships(userId);
-        if (memberships == null) {
-            System.out.println("Memberships is null");
+        if (headers.getRequestHeader("userid") != null) {
+            userId = headers.getRequestHeader("userid").get(0);
         } else {
-            for (String membership : membershipsDataSource.getMemberships(userId)) {
-                Community c = communitiesDataSource.getCommunity(membership);
-                if (c != null) communities.add(c);
-            }
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
 
-        return communities;
-
+        membershipsDataSource.removeMembership(userId, communityId);
+        return Response.noContent().build();
     }
 
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response putMembership(@Context HttpHeaders headers) {
+        String userId;
+
+        if (headers.getRequestHeader("userid") != null) {
+            userId = headers.getRequestHeader("userid").get(0);
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        membershipsDataSource.addMembership(userId, communityId);
+        return Response.noContent().build();
+
+
+    }
 
 }

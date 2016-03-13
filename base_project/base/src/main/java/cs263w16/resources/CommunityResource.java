@@ -130,9 +130,9 @@ public class CommunityResource {
 
     /*
     @Path("membership")
-    public MembershipResource getMemberShip(@PathParam("community") String id) {
+    public MembershipsResource getMemberShip(@PathParam("community") String id) {
 
-        return new MembershipResource(uriInfo, request, id);
+        return new MembershipsResource(uriInfo, request, id);
 
     }
     */

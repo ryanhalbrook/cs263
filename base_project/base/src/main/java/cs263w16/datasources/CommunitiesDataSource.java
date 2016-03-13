@@ -18,37 +18,37 @@ public interface CommunitiesDataSource {
      * @param communityId
      * @return
      */
-    public Community getCommunity(String communityId);
+    Community getCommunity(String communityId);
 
     /**
      * Add a data entry for a new community.
      * @param community
      */
-    public void addCommunity(Community community);
+    void addCommunity(Community community);
 
     /**
      * Update the data entry for a community.
      * @param community
      */
-    public void updateCommunity(Community community);
+    void updateCommunity(Community community);
 
     /**
      * Delete a community.
      * @param communityId
      */
-    public void deleteCommunity(String communityId) throws DatastoreFailureException, ConcurrentModificationException, IllegalArgumentException;
+    void deleteCommunity(String communityId) throws DatastoreFailureException, ConcurrentModificationException, IllegalArgumentException;
 
     /**
      * Get all events for the specified community.
      * @param communityId
      * @return
      */
-    public List<Event> eventsForCommunity(String communityId);
+    List<Event> eventsForCommunity(String communityId);
 
     /**
      * Get all communities whose names start with pattern.
      * @param pattern
      * @return
      */
-    public List<Community> queryCommunitiesPrefix(String pattern);
+    List<Community> queryCommunitiesPrefix(String pattern);
 }
