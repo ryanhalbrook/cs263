@@ -6,22 +6,15 @@ $.getScript("/js/flatfish.js");
 
 function fetchEvent(communityid, eventid) {
 
-    var setCommunity = function(data) {
-        window.community = data;
-        $("#community-name").html(window.community.id);
-        $("#community-desc").html(window.community.description);
-
-        $("#join-button").click(joinCommunity(window.community.id, username));
+    var setEvent = function(data) {
+        window.event = data;
+        $("#community-name").html(window.event.communityName);
+        $("#event-name").html(window.event.name);
+        $("#event-desc").html(window.event.description);
+        $("#event-date").html(window.event.eventDate);
 
     }
-    getResourceWithUsername("/rest/communities/" + communityid, username, setCommunity);
-
-}
-
-function joinCommunity(communityid, username) {
-
-    var callback = function(data) {console.log(data);}
-    postResourceWithUsername("/rest/communities/" + communityid + "/membership", username, callback);
+    getResourceWithUsername("/rest/communities/" + communityid + "/events/" + eventid + ":" + communityid, window.user.userId, setEvent);
 
 }
 
@@ -45,10 +38,9 @@ $( document ).ready(function() {
                 );
 
                 var urlParams = getUrlParams(window.location.href);
-                var communityid = urlParams["communityid"]
 
-                if (urlParams["communityid"]) {
-                    fetchCommunity(communityid, data.userId);
+                if (urlParams["communityid"] && urlParams["eventid"]) {
+                    fetchEvent(urlParams["communityid"], urlParams["eventid"]);
                 }
 
             } else {

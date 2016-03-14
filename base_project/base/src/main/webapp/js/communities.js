@@ -8,7 +8,7 @@ function leaveCommunity(event) {
     console.log("Leaving community");
     console.log("Leaving community " + event.data.communityid);
     var callback = function(data) {console.log(data);};
-    deleteResourceWithUsername("/rest/communities/" + event.data.communityid + "/membership", event.data.username, callback);
+    deleteResourceWithUsername("/rest/memberships/" + event.data.communityid, event.data.username, callback);
     setTimeout(function(){ fetchUserCommunities(event.data.username); }, 500);
 
 }
@@ -24,8 +24,8 @@ function fetchUserCommunities(userId) {
 
             var id = "leave-button-" + community.id.replace(/ /g, '_');
 
-            var leaveButton = "<button type=\"submit\" class=\"btn btn-default\" id=\"" + id + "\">Leave Community</button>";
-            $( "#communities-body" ).append("<tr><td>" + community.id + "</td><td>" + leaveButton + "</td></tr>");
+            var leaveButton = "<button type=\"submit\" class=\"btn btn-default btn-xs\" id=\"" + id + "\">Leave Community</button>";
+            $( "#communities-body" ).append("<tr><td><a href=\"/html/community.html?communityid=" + community.id + "\">" + community.id + "</a></td><td style=\"text-align:right;\">" + leaveButton + "</td></tr>");
             $("#" + id).bind("click", {communityid: community.id, username: userId}, leaveCommunity);
 
 

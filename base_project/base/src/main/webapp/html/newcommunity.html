@@ -68,14 +68,14 @@
                 <a href="communities.html">Back to My Communities</a>
 
                 <h3>Create a Community!</h3>
-                <form action="/rest/communities" method="post">
+                <form id="cform">
                     <div class="form-group">
-                        <label for="communityName">Name</label>
-                        <input type="text" name="communityid" class="form-control" id="communityid">
+                        <label for="communityid">Name</label>
+                        <input id="communityid" type="text" name="communityid" class="form-control" id="communityid">
                     </div>
                     <div class="form-group">
-                        <label for="communityDescription">Description</label>
-                        <input type="text" name="description" class="form-control" id="description">
+                        <label for="description">Description</label>
+                        <input id="description" type="text" name="description" class="form-control" id="description">
                     </div>
                     <!--
                     <div class="form-group">
@@ -120,6 +120,6 @@
 <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
 <script src="../bootstrap/js/bootstrap.min.js"></script>
 
-<!--<script src="../js/communities.js"></script>-->
+<script src="../js/newcommunity.js"></script>
 </body>
 </html>

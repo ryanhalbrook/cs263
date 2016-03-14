@@ -5,19 +5,25 @@
 
 function getResourceWithUsername(url, username, callback) {
 
-    $.ajax({url: url, method:"GET", beforeSend: function(xhr){xhr.setRequestHeader('username', username);}, dataType: "json"}).done(callback);
+    $.ajax({url: url, method:"GET", beforeSend: function(xhr){xhr.setRequestHeader('userid', username);}, dataType: "json"}).done(callback);
 
 }
 
 function postResourceWithUsername(url, username, callback) {
 
-    $.ajax({url: url, method:"POST", beforeSend: function(xhr){xhr.setRequestHeader('username', username);}, dataType: "json"}).done(callback);
+    $.ajax({url: url, method:"POST", beforeSend: function(xhr){xhr.setRequestHeader('userid', username);}, dataType: "json"}).done(callback);
+
+}
+
+function putResourceWithUsername(url, username, callback) {
+
+    $.ajax({url: url, method:"PUT", beforeSend: function(xhr){xhr.setRequestHeader('userid', username);}, dataType: "json"}).done(callback);
 
 }
 
 function deleteResourceWithUsername(url, username, callback) {
 
-    $.ajax({url: url, method:"DELETE", beforeSend: function(xhr){xhr.setRequestHeader('username', username);}, dataType: "json"}).done(callback);
+    $.ajax({url: url, method:"DELETE", beforeSend: function(xhr){xhr.setRequestHeader('userid', username);}, dataType: "json"}).done(callback);
 
 }
 

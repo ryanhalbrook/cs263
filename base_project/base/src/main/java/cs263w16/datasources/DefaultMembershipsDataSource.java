@@ -45,10 +45,66 @@ public class DefaultMembershipsDataSource implements MembershipsDataSource {
                 txn.rollback();
             }
         }
+
+        // Add MembershipEvents for all of the community's events.
+        Query.Filter filter =
+                new Query.FilterPredicate("communityName",
+                        Query.FilterOperator.EQUAL,
+                        communityId);
+
+        Query q = new Query("Event").setFilter(filter);
+
+        List<Entity> entities = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+
+        if (entities == null) {
+            return;
+        }
+
+        for (Entity entity : entities) {
+
+            String eventId = entity.getKey().getName();
+            Date date = (Date)entity.getProperty("date");
+
+            Entity membershipEvent = new Entity("MembershipEvent", userId + ":" + eventId);
+            membershipEvent.setProperty("hidden", Boolean.valueOf(false));
+            membershipEvent.setProperty("eventid", eventId);
+            membershipEvent.setProperty("userid", userId);
+            membershipEvent.setProperty("eventDate", date);
+            membershipEvent.setProperty("communityid", communityId);
+            datastore.put(membershipEvent);
+        }
+
     }
 
     public void removeMembership(String userId, String communityId) {
         datastore.delete(KeyFactory.createKey("Membership", userId + ":" + communityId));
+
+        // Delete all MembershipEvents
+        Query.Filter userIdFilter =
+                new Query.FilterPredicate("userid",
+                        Query.FilterOperator.EQUAL,
+                        userId);
+
+        Query.Filter communityIdFilter =
+                new Query.FilterPredicate("communityid",
+                        Query.FilterOperator.EQUAL,
+                        communityId);
+
+        Query.CompositeFilter filter =
+                new Query.CompositeFilter(Query.CompositeFilterOperator.AND, Arrays.asList(userIdFilter, communityIdFilter));
+
+        Query q = new Query("MembershipEvent").setFilter(filter);
+
+        List<Entity> entities = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+
+        if (entities == null) {
+            return;
+        }
+
+        for (Entity entity : entities) {
+            datastore.delete(KeyFactory.createKey("MembershipEvent",entity.getKey().getName()));
+        }
+
     }
 
     public List<Membership> getMemberships(String userId) {
@@ -148,6 +204,7 @@ public class DefaultMembershipsDataSource implements MembershipsDataSource {
             membershipEvent.setProperty("eventid", eventId);
             membershipEvent.setProperty("userid", userId);
             membershipEvent.setProperty("eventDate", date);
+            membershipEvent.setProperty("communityid", communityId);
             datastore.put(membershipEvent);
         }
 

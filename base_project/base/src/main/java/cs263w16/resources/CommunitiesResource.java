@@ -49,7 +49,7 @@ public class CommunitiesResource {
 
         community = new Community(communityId, description, new Date(), userId);
         communitiesDataSource.addCommunity(community);
-        return Response.temporaryRedirect(URI.create("/html/communities.html")).build();
+        return Response.ok().entity("ok").build();//temporaryRedirect(URI.create("/html/communities.html")).build();
     }
 
     @Path("{community}")

@@ -11,7 +11,19 @@ function fetchCommunity(communityid, username) {
         $("#community-name").html(window.community.id);
         $("#community-desc").html(window.community.description);
 
-        $("#join-button").click(joinCommunity(window.community.id, username));
+        var adminUserId = window.community.adminUserId;
+
+        if (adminUserId == window.user.userId) {
+            $("#new-event-button").click(function() {
+                window.location.href = "/html/newevent.html?communityid=" + communityid;
+            });
+            $("#actions-menu").html("Community Admin");
+            $("#new-event-button").show();
+        } else {
+            $("#actions-menu").html("Community Membership");
+            $("#join-button").click(joinCommunity(window.community.id, username));
+            $("#join-button").show();
+        }
 
     }
     getResourceWithUsername("/rest/communities/" + communityid, username, setCommunity);
@@ -21,7 +33,7 @@ function fetchCommunity(communityid, username) {
 function joinCommunity(communityid, username) {
 
     var callback = function(data) {console.log(data);}
-    postResourceWithUsername("/rest/communities/" + communityid + "/membership", username, callback);
+    putResourceWithUsername("/rest/memberships/" + communityid, username, callback);
 
 }
 

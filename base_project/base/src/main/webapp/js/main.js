@@ -10,7 +10,7 @@ function formatDate(timestamp) {
 function fetchUserFeed(username) {
                 $.ajax({url: "../rest/feed",
                                     method:"GET",
-                                    beforeSend: function(xhr){xhr.setRequestHeader('username', username);},
+                                    beforeSend: function(xhr){xhr.setRequestHeader('userid', username);},
                                     dataType: "json"}).done(
 
                                         function (data) {

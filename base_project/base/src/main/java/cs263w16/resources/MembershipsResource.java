@@ -31,7 +31,7 @@ public class MembershipsResource {
                               @Context HttpServletResponse servletResponse,
                               @Context HttpHeaders headers) throws IOException {
 
-        String user = headers.getRequestHeader("username").get(0);
+        String user = headers.getRequestHeader("userid").get(0);
         membershipsDataSource.addMembership(user, communityId);
 
     }
@@ -41,7 +41,7 @@ public class MembershipsResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Community> getMemberships(@Context HttpServletResponse servletResponse,
                                           @Context HttpHeaders headers) {
-        String userId = headers.getRequestHeader("username").get(0);
+        String userId = headers.getRequestHeader("userid").get(0);
         if (userId == null) return null;
 
         List<Community> communities = new ArrayList<>();
