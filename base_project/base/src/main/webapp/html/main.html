@@ -69,24 +69,51 @@
         <!--<p class="lead">Please <a href="<%= userService.createLoginURL(signupPage) %>">Sign Up</a> to get started</p>-->
         <p id="user-info"></p>
 
-        <div id="upcoming-events" style="visibility:hidden;">
-            <h3>Upcoming Events</h3>
+        <div class="row">
+            <div class="col-md-8">
 
-            <div style="color:black; background-color:white;border:1px solid black;width:600px;height:400px;overflow-y:scroll;">
-            <table class="table">
-                <thead>
-                    <td>Name</td>
-                    <td>Description</td>
-                    <td>Community</td>
-                    <td>Date</td>
-                </thead>
-                <tbody id="events-body">
+                <div id="upcoming-events" style="visibility:visible;">
+                    <h3>Upcoming Events</h3>
 
-                </tbody>
-            </table>
+                    <div style="color:black; overflow-y:scroll;">
+                        <table class="table">
+
+                            <tbody id="events-body">
+                            <tr><td id="events-region">
+
+
+                            </td></tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                </div>
+
+
             </div>
+            <div class="col-md-4">
+                <div id="announcements" style="visibility:hidden;">
+                    <h3>Announcements</h3>
 
+                    <div style="color:black; background-color:white;border:1px solid gray;overflow-y:scroll;">
+                        <table class="table">
+                            <thead>
+                            <td>Event</td>
+                            <td>Title</td>
+                            <td>Description</td>
+                            </thead>
+                            <tbody id="announcements-body">
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
         </div>
+
+
 
     </div>
 

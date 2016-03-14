@@ -1,4 +1,8 @@
 .starter-template {
-    padding: 40px 15px;
+    /*padding: 40px 15px;*/
+}
+
+body {
+    background-color:#E7E7E7;
 }
 

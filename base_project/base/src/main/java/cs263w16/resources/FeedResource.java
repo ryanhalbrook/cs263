@@ -45,6 +45,7 @@ public class FeedResource {
 
     }
 
+    @Path("events")
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Response getEvents(@Context HttpServletResponse servletResponse,
@@ -61,4 +62,24 @@ public class FeedResource {
 
         return Response.ok().entity(membershipsDataSource.getMembershipEventsForUser(userId)).build();
     }
+
+    @Path("announcements")
+    @GET
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    public Response getAnnouncements(@Context HttpServletResponse servletResponse,
+                              @Context HttpHeaders headers) {
+
+        if (headers.getRequestHeader("userid") == null) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        String userId = headers.getRequestHeader("userid").get(0);
+        if (userId == null || userId.equals("")) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+
+        return Response.ok().entity(membershipsDataSource.getSubscriptionAnnouncementsForUser(userId)).build();
+    }
+
+
 }

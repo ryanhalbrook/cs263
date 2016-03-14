@@ -6,9 +6,7 @@ import cs263w16.datasources.DefaultMembershipsDataSource;
 import cs263w16.datasources.MembershipsDataSource;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.util.logging.Logger;
 
@@ -61,6 +59,14 @@ public class MembershipResource {
         membershipsDataSource.addMembership(userId, communityId);
         return Response.status(Response.Status.CREATED).build();
 
+
+    }
+
+
+    @Path("events/{event}")
+    public MembershipEventResource getMembershipEvent(@PathParam("event") String eventId) {
+
+        return new MembershipEventResource(uriInfo, request, communityId, eventId);
 
     }
 

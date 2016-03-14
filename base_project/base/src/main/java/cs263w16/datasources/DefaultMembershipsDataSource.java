@@ -63,7 +63,7 @@ public class DefaultMembershipsDataSource implements MembershipsDataSource {
         for (Entity entity : entities) {
 
             String eventId = entity.getKey().getName();
-            Date date = (Date)entity.getProperty("date");
+            Date date = (Date)entity.getProperty("eventDate");
 
             Entity membershipEvent = new Entity("MembershipEvent", userId + ":" + eventId);
             membershipEvent.setProperty("hidden", Boolean.valueOf(false));
@@ -217,7 +217,15 @@ public class DefaultMembershipsDataSource implements MembershipsDataSource {
         Query.Filter userIdfilter =
                 new Query.FilterPredicate("userid", Query.FilterOperator.EQUAL, userId);
 
-        Query q = new Query("MembershipEvent").setFilter(userIdfilter).addSort("eventDate", Query.SortDirection.ASCENDING);
+        Date now = new Date();
+
+        Query.Filter upcomingFilter =
+                new Query.FilterPredicate("eventDate", Query.FilterOperator.GREATER_THAN, now);
+
+        Query.CompositeFilter filter =
+                new Query.CompositeFilter(Query.CompositeFilterOperator.AND, Arrays.asList(userIdfilter, upcomingFilter));
+
+        Query q = new Query("MembershipEvent").setFilter(filter).addSort("eventDate", Query.SortDirection.ASCENDING);
 
         List<Entity> entities = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
         List<String> eventIds = new ArrayList<>();
@@ -306,8 +314,41 @@ public class DefaultMembershipsDataSource implements MembershipsDataSource {
             subscriptionAnnouncement.setProperty("title", announcement.getTitle());
             subscriptionAnnouncement.setProperty("description", announcement.getDescription());
             subscriptionAnnouncement.setProperty("membershipid", membershipId);
+            subscriptionAnnouncement.setProperty("eventid", announcement.getEventId());
 
             datastore.put(subscriptionAnnouncement);
         }
     }
+
+    public List<Announcement> getSubscriptionAnnouncementsForUser(String userId) {
+        List<Announcement> announcements = new ArrayList<>();
+
+        Query.Filter filter = new Query.FilterPredicate("userid", Query.FilterOperator.EQUAL, userId);
+
+        Query q = new Query("Membership").setFilter(filter);
+
+        List<Entity> entities = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+
+        for (Entity entity : entities) {
+            String membershipId = entity.getKey().getName();
+
+            Query.Filter membershipFilter = new Query.FilterPredicate("membershipid", Query.FilterOperator.EQUAL, membershipId);
+
+            Query announcementQuery = new Query("SubscriptionAnnouncement").setFilter(membershipFilter);
+
+            List<Entity> announcementEntities = datastore.prepare(announcementQuery).asList(FetchOptions.Builder.withDefaults());
+
+            for (Entity announcementEntity : announcementEntities) {
+                announcements.add(new Announcement((String)announcementEntity.getProperty("eventid"),
+                        (String)announcementEntity.getProperty("title"),
+                        (String)announcementEntity.getProperty("description")));
+            }
+
+
+        }
+
+        return announcements;
+
+    }
+
 }

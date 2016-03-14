@@ -72,4 +72,6 @@ public interface MembershipsDataSource {
      * @param communityId
      */
     void propagateEvent(String eventId, String communityId);
+
+    List<Announcement> getSubscriptionAnnouncementsForUser(String userId);
 }
