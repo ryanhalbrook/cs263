@@ -31,7 +31,7 @@ public class SubscriptionsResource {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        String regexp = "\\A[\\w]+\\z";
+        String regexp = "\\A[\\w:]+\\z";
 
         if (!Pattern.matches(regexp, eventId)) {
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -70,7 +70,7 @@ public class SubscriptionsResource {
             return null;
         }
 
-        String regexp = "\\A[\\w]+\\z";
+        String regexp = "\\A[\\w:]+\\z";
 
         if (!Pattern.matches(regexp, id)) {
             return null;

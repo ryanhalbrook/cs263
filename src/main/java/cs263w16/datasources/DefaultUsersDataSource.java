@@ -1,31 +1,41 @@
 package cs263w16.datasources;
 
 import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.memcache.*;
 import cs263w16.model.AppUser;
 import cs263w16.resources.CommunityResource;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.logging.Logger;
+import java.util.logging.*;
+import java.io.*;
 
 /**
  * Created by ryanhalbrook on 2/29/16.
  */
 public class DefaultUsersDataSource implements UsersDataSource {
     private DatastoreService datastore;
+    MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+
 
     private static final Logger log = Logger.getLogger(CommunityResource.class.getName());
 
     public DefaultUsersDataSource() {
         this.datastore = DatastoreServiceFactory.getDatastoreService();
+        syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
     }
 
     public AppUser getUser(String userId) throws EntityNotFoundException {
 
         Key key = KeyFactory.createKey("AppUser", userId);
 
-        Entity entity = datastore.get(key);
+        Entity entity;
+
+        entity = (Entity)syncCache.get(key.getKind() + "$" + key.getName());
+
+        if (entity == null) {
+            entity = datastore.get(key);
+            syncCache.put(key.getKind() + "$" + key.getName(), entity);
+        }
+
         return ModelTranslator.unboxAppUser(entity);
     }
 

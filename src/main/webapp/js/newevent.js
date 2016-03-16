@@ -3,7 +3,6 @@ $.getScript("/js/flatfish.js");
 function userInfoCallback(data) {
     if (data) {
 
-        //$( "#user-info" ).append("User Name: " + data.userName);
         $( "#user-dropdown-title" ).html(data.emailAddress);
 
         $.getJSON("/rest/user/logouturl").done(
@@ -15,7 +14,6 @@ function userInfoCallback(data) {
 
     } else {
 
-        //$( "#user-dropdown" ).remove();
         $.getJSON("/rest/user/loginurl").done(
             function (data) {
                 $( "#user-info" ).html("Please <a href=\"" + data.string + "\">Sign in</a> with Google.");

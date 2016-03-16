@@ -130,7 +130,7 @@ public class CommunityEventsResource {
             return null;
         }
 
-        String regexp = "\\A[\\w]+\\z";
+        String regexp = "\\A[\\w:]+\\z";
 
         if (!Pattern.matches(regexp, id)) {
             return null;

@@ -1,11 +1,15 @@
 package cs263w16.datasources;
 
 import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.memcache.ErrorHandlers;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import cs263w16.model.Community;
 import cs263w16.model.Event;
 import cs263w16.resources.CommunityResource;
 
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -14,10 +18,13 @@ import java.util.logging.Logger;
 public class DefaultCommunitiesDataSource implements CommunitiesDataSource {
 
     private DatastoreService datastore;
+    MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
     private static final Logger log = Logger.getLogger(CommunityResource.class.getName());
+
 
     public DefaultCommunitiesDataSource() {
         this.datastore = DatastoreServiceFactory.getDatastoreService();
+        syncCache.setErrorHandler(ErrorHandlers.getConsistentLogAndContinue(Level.INFO));
     }
 
     public void addCommunity(Community community) {
@@ -63,12 +70,20 @@ public class DefaultCommunitiesDataSource implements CommunitiesDataSource {
         }
         Community community;
         try {
-            Entity entity = datastore.get(KeyFactory.createKey("Community", communityName));
+
+            Key key = KeyFactory.createKey("Community", communityName);
+            Entity entity;
+
+            entity = (Entity)syncCache.get(key.getKind() + "$" + key.getName());
+
+            if (entity == null) {
+                entity = datastore.get(key);
+                syncCache.put(key.getKind() + "$" + key.getName(), entity);
+            }
             community = ModelTranslator.unboxCommunity(entity);
 
         } catch (EntityNotFoundException e) {
             community = null;
-            log.info("Could not find a community that was requested");
         }
         return community;
     }
@@ -112,7 +127,7 @@ public class DefaultCommunitiesDataSource implements CommunitiesDataSource {
     public List<Event> eventsForCommunity(String communityName) {
 
         Query.Filter keyFilter =
-                new Query.FilterPredicate("community_name",
+                new Query.FilterPredicate("community_id",
                         Query.FilterOperator.EQUAL,
                         communityName);
         Query q = new Query("Event").setFilter(keyFilter);

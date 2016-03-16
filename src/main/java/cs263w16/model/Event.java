@@ -26,6 +26,13 @@ public class Event {
         this.communityName = communityName;
     }
 
+    public Event(String name, String description, String communityName, Date date) {
+        this.name = name;
+        this.description = description;
+        this.communityName = communityName;
+        this.date = date;
+    }
+
     public String getName() {
         return name;
     }

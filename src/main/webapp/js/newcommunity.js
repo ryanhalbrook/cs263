@@ -3,7 +3,6 @@ $.getScript("/js/flatfish.js");
 function userInfoCallback(data) {
     if (data) {
 
-        //$( "#user-info" ).append("User Name: " + data.userName);
         $( "#user-dropdown-title" ).html(data.emailAddress);
 
         $.getJSON("/rest/user/logouturl").done(
@@ -15,7 +14,6 @@ function userInfoCallback(data) {
 
     } else {
 
-        //$( "#user-dropdown" ).remove();
         $.getJSON("/rest/user/loginurl").done(
             function (data) {
                 $( "#user-info" ).html("Please <a href=\"" + data.string + "\">Sign in</a> with Google.");
@@ -43,7 +41,7 @@ $( document ).ready(function() {
             alert("Status:" + xhr.status);
         }
 
-        var url = "/rest/communities?communityid=" + name + "&description=" + desc;
+        var url = "/rest/communities?name=" + name + "&description=" + desc;
         $.ajax({url: url,
                 method:"POST",
                 contentType:"application/x-www-form-urlencoded",

@@ -41,7 +41,7 @@ public class ModelTranslator {
         Event event = new Event(
                 (String)entity.getProperty("name"),
                 (String)entity.getProperty("description"),
-                (String)entity.getProperty("community_name")
+                (String)entity.getProperty("community_id")
         );
 
         if (entity.hasProperty("date")) {
@@ -55,7 +55,7 @@ public class ModelTranslator {
         Entity entity = new Entity("Event", event.getId());
         entity.setProperty("name", event.getName());
         entity.setProperty("description", event.getDescription());
-        entity.setProperty("community_name", event.getCommunityName());
+        entity.setProperty("community_id", event.getCommunityName());
 
         if (event.getDate() != null) {
             entity.setProperty("date", event.getDate());

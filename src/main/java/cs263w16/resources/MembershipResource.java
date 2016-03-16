@@ -71,7 +71,7 @@ public class MembershipResource {
             return null;
         }
 
-        String regexp = "\\A[\\w]+\\z";
+        String regexp = "\\A[\\w:]+\\z";
 
         if (!Pattern.matches(regexp, eventId)) {
             return null;

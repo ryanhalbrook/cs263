@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.*;
 import cs263w16.model.*;
 import cs263w16.resources.CommunityResource;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -22,26 +23,12 @@ public class DefaultMembershipsDataSource implements MembershipsDataSource {
 
     public void addMembership(String userId, String communityId) {
 
-        Transaction txn = datastore.beginTransaction();
+        Entity membership = ModelTranslator.boxMembership(new Membership(communityId, userId));
         try {
-            try {
-
-                Entity membership = ModelTranslator.boxMembership(new Membership(communityId, userId));
-                try {
-                    datastore.put(membership);
-                    txn.commit();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    log.warning("Failed to add membership");
-                }
-
-            } catch (Exception e) {
-                log.warning("AppUser not found, failed to add membership");
-            }
-        } finally {
-            if (txn.isActive()) {
-                txn.rollback();
-            }
+            datastore.put(membership);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.warning("Failed to add membership");
         }
 
         // Add MembershipEvents for all of the community's events.
@@ -213,9 +200,16 @@ public class DefaultMembershipsDataSource implements MembershipsDataSource {
         Query.CompositeFilter filter =
                 new Query.CompositeFilter(Query.CompositeFilterOperator.AND, Arrays.asList(userIdfilter, upcomingFilter));
 
-        Query q = new Query("MembershipEvent").setFilter(filter).addSort("event_date", Query.SortDirection.ASCENDING);
+        Query q = new Query("MembershipEvent").setFilter(filter);
 
-        List<Entity> entities = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+        List<Entity> entities = null;
+
+        try {
+            entities = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+        } catch (Exception e) {
+            log.log(Level.SEVERE, e.getMessage());
+        }
+
         List<String> eventIds = new ArrayList<>();
 
         for (Entity entity : entities) {
@@ -233,10 +227,14 @@ public class DefaultMembershipsDataSource implements MembershipsDataSource {
                 entity = datastore.get(KeyFactory.createKey("Event", eventId));
                 Event event = new Event(  eventId,
                         (String)entity.getProperty("description"),
-                        (String)entity.getProperty("community_name"));
+                        (String)entity.getProperty("community_id"));
 
-                event.setDate((Date)entity.getProperty("event_date"));
+                Date d = (Date)entity.getProperty("date");
+                System.out.println("Date" + d.toString());
 
+                event.setDate((Date)entity.getProperty("date"));
+
+                System.out.println("Date2" + event.getDate().toString());
                 events.add(event);
             } catch (EntityNotFoundException e) {
                 // Oh well, live and log
@@ -244,6 +242,8 @@ public class DefaultMembershipsDataSource implements MembershipsDataSource {
             }
         }
 
+        System.out.println("Date3: " + events.get(0).getDate().toString());
+        Collections.sort(events, new EventComparator());
         return events;
 
     }
