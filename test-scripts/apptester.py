@@ -1,4 +1,5 @@
 # apptester.py
+
 # integration testing for the events app services. 
 # Ryan Halbrook, 3/16/16
 
@@ -16,8 +17,8 @@ def test_post_community(community_client):
 
 	# Delete the community.
 	response = community_client.delete_community(name)
-	if response.status_code != 204:
-		print "test_post_community failed to DELETE, expected status code 204, got " + str(response.status_code)
+	if response.status_code != 204 and response.status_code != 417:
+		print "test_post_community failed to DELETE, expected status code 204 or 417, got " + str(response.status_code)
 		return
 	
 	# Add a new community. 
@@ -47,8 +48,8 @@ def test_event(event_client, community_client):
 
 	# Delete the community.
 	response = community_client.delete_community(community_name)
-	if response.status_code != 204:
-		print "test_post_community failed to DELETE, expected status code 204, got " + str(response.status_code)
+	if response.status_code != 204 and response.status_code != 417:
+		print "test_post_community failed to DELETE, expected status code 204 or 417, got " + str(response.status_code)
 		return
 
 	# Add a new community. 
